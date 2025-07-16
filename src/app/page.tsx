@@ -15,7 +15,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex h-2/3 w-full flex-col border border-blue-500 xl:h-full xl:flex-2/3 xl:flex-row">
-        <div className="flex-1 overflow-scroll flex flex-col gap-2">
+        <div className="flex-1 overflow-scroll flex flex-col gap-2 p-2">
             <Match />
             <Match />
             <Match />

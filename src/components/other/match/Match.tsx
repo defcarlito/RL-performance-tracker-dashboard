@@ -1,6 +1,6 @@
 export default function Match() {
   return (
-    <div className="bg-card flex flex-col p-2">
+    <div className="to-card flex flex-col rounded-2xl bg-gradient-to-r from-green-200/20 p-2">
       <div className="flex flex-wrap justify-between">
         <div className="flex gap-2">
           <div>W</div>
