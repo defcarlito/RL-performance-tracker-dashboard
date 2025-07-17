@@ -1,4 +1,4 @@
-import Match from "@/components/other/match/Match"
+import Match from "@/components/match/Match"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
