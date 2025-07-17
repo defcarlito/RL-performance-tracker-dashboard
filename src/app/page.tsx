@@ -1,5 +1,4 @@
-import Match from "@/components/match/Match"
-import { Button } from "@/components/ui/button"
+import Dashboard from "@/components/content/match/MatchDashboard"
 
 export default function Home() {
   return (
@@ -14,23 +13,7 @@ export default function Home() {
           <p>2v2 - (current)</p>
         </div>
       </div>
-      <div className="flex h-2/3 w-full flex-col border border-blue-500 xl:h-full xl:flex-2/3 xl:flex-row">
-        <div className="flex-1 overflow-scroll flex flex-col gap-2 p-2">
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-            <Match />
-        </div>
-        <div className="flex-1">
-          <div>these are stats about the match</div>
-        </div>
-      </div>
+      <Dashboard />
     </div>
   )
 }

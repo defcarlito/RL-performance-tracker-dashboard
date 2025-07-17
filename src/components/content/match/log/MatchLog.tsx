@@ -1,4 +1,19 @@
-export default function Match() {
+export default function Log() {
+  return (
+    <div className="flex flex-col gap-2 p-2">
+      <Match />
+      <Match />
+      <Match />
+      <Match />
+      <Match />
+      <Match />
+      <Match />
+      <Match />
+    </div>
+  )
+}
+
+export function Match() {
   return (
     <div className="to-card border-border flex flex-col rounded-2xl border-2 bg-gradient-to-r from-green-400/50 to-15% p-2">
       <div className="flex flex-wrap justify-between items-center">
