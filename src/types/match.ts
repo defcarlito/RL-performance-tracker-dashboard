@@ -17,7 +17,7 @@ export type Game = {
 export type Goal = {
   GoalClip?: string
   GoalTimeSeconds: number
-  ScorerName: string
+  ScorerName?: string
   ScorerTeam: 0 | 1
 }
 
