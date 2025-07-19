@@ -1,33 +1,25 @@
 "use client"
 
-import Log from "./log/MatchLog"
+import Log from "./table/MatchLog"
 
 import { db } from "@/firebase/config"
 import { Game, Goal, Player } from "@/types/match"
-import { collection, getDocs, query, where, limit } from "firebase/firestore"
+import { collection, getDocs, query, where, limit, orderBy } from "firebase/firestore"
 
 import { useEffect, useState } from "react"
 
 export default function Dashboard() {
   let matchFetchLimit: number = 20
-  const {games: recentGames, loading: loadingGames } = useFetchRecentMatches(matchFetchLimit)
+  const {games: recentMatches, loading: loadingGames } = useFetchRecentMatches(matchFetchLimit)
 
   return (
 
     <div className="flex h-2/3 w-full flex-col border border-blue-500 xl:h-full xl:flex-2/3 xl:flex-row">
       <div className="flex-1 overflow-scroll">
-        <Log />
+        <Log allMatches={recentMatches}/>
       </div>
       <div className="flex-1">
-        {loadingGames ? (
-          <>loading...</>
-        ) : (
-          recentGames.map((game) => (
-            <div key={game.StartEpoch}>
-              <p>{game.StartEpoch}</p>
-            </div>
-          ))
-        )}
+        
       </div>
     </div>
   )
@@ -41,6 +33,7 @@ function useFetchRecentMatches(fetchLimit: number) {
     const matchDatesRef = query(
       collection(db, "matches"),
       where("FormatVersion", "==", "8.0"),
+      orderBy("StartEpoch", "desc"),
       limit(fetchLimit)
     )
 
