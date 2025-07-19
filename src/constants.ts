@@ -1,0 +1,1 @@
+export const LOCAL_PLAYER_ID: string = "7ee4160ca48945f49f44938cfeacc96f"
