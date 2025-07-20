@@ -15,11 +15,16 @@ export default function Dashboard() {
   return (
 
     <div className="flex h-2/3 w-full flex-col border border-blue-500 xl:h-full xl:flex-2/3 xl:flex-row">
-      <div className="flex-1 overflow-scroll">
-        <Log allMatches={recentMatches}/>
+      <div className="flex-1 overflow-scroll flex flex-col gap-4 px-2">
+        <div>
+          sort by given date
+        </div>
+        <div className="flex flex-col gap-2">
+          <Log allMatches={recentMatches}/>
+        </div>
       </div>
       <div className="flex-1">
-        
+        pretend this is match info
       </div>
     </div>
   )

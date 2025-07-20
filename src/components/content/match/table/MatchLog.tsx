@@ -1,6 +1,5 @@
-import { LOCAL_PLAYER_ID } from "@/constants"
+import { LOCAL_PLAYER_ID, ONES_PLAYLIST } from "@/constants"
 import { Game, Player } from "@/types/match"
-import { useEffect, useState } from "react"
 
 type logProps = {
   allMatches: Array<Game>
@@ -8,11 +7,11 @@ type logProps = {
 
 export default function Log({ allMatches }: logProps) {
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <>
       {allMatches.map((match: Game, index: number) => (
         <Match matchData={match} key={index} />
       ))}
-    </div>
+    </>
   )
 }
 
@@ -27,14 +26,16 @@ export function Match({ matchData }: matchProps) {
   )!
 
   const localTeam: number = localPlayer?.Team
+  const opponentTeam: number = localTeam === 0 ? 1 : 0
 
-  const localTeamScore = localTeam === 0 ? matchData.Team0Score : matchData.Team1Score
-  const opponentTeamScore = localTeam === 0 ? matchData.Team1Score : matchData.Team0Score
-
+  const localTeamScore =
+    localTeam === 0 ? matchData.Team0Score : matchData.Team1Score
+  const opponentTeamScore =
+    localTeam === 0 ? matchData.Team1Score : matchData.Team0Score
   const score: string = `${localTeamScore} - ${opponentTeamScore}`
 
   const hasLocalPlayerWon = (): boolean => {
-    if (matchData.LocalMMRAfter > matchData.LocalMMRBefore){
+    if (matchData.LocalMMRAfter > matchData.LocalMMRBefore) {
       return true
     } else if (matchData.LocalMMRAfter < matchData.LocalMMRBefore) {
       return false
@@ -44,24 +45,38 @@ export function Match({ matchData }: matchProps) {
 
   const cardAccentColor = hasLocalPlayerWon() ? "green" : "red"
   const cardGradient = `from-${cardAccentColor}-400/50`
-  
-  const mmrDifference = matchData.LocalMMRAfter - matchData.LocalMMRBefore
-  const playlist = matchData.Playlist === 10 ? "1v1" : "2v2"
+
+  const mmrDifference = () => {
+    const diff = matchData.LocalMMRAfter - matchData.LocalMMRBefore
+    if (diff === 0) return "0 MMR"
+    return diff > 0 ? `+${diff} MMR` : `-${Math.abs(diff)} MMR`
+  }
+  const playlist: string = matchData.Playlist === ONES_PLAYLIST ? "1v1" : "2v2"
+
+  const opponents: Array<Player> = players.filter(
+    (playerInfo) => playerInfo.Team === opponentTeam
+  )
+  const opponentNames: string = opponents.map(player => player.Name).join(", ")
+
+  const formatDate = (date: string): string => {
+    const parts = date.split("-")
+    return `${+parts[1]}/${+parts[2]}/${parts[0]}`
+  }
 
   return (
-    <div className={`to-card border-border flex flex-col rounded-2xl border-2 bg-gradient-to-r ${cardGradient} to-15% p-2`}>
+    <div
+      className={`to-card border-border flex flex-col rounded-2xl border-2 bg-gradient-to-r ${cardGradient} to-15% p-2`}
+    >
       <div className="flex flex-wrap items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="text-2xl">
-            {hasLocalPlayerWon() ? "W" : "L"}
-          </div>
+          <div className="text-2xl">{hasLocalPlayerWon() ? "W" : "L"}</div>
           <div>{score}</div>
         </div>
-        <div>{localPlayer.Name}</div>
-        <div>{matchData.StartDate}</div>
+        <div className="text-sm">vs. {opponentNames}</div>
+        <div>{formatDate(matchData.StartDate)}</div>
       </div>
       <div className="align-start flex flex-wrap justify-between">
-        <div>(mmr diff)</div>
+        <div>{mmrDifference()}</div>
         <div>{playlist}</div>
       </div>
     </div>
