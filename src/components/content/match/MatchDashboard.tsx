@@ -7,6 +7,7 @@ import { Game, Goal, Player } from "@/types/match"
 import { collection, getDocs, query, where, limit, orderBy } from "firebase/firestore"
 
 import { useEffect, useState } from "react"
+import Filter from "./table/Filter"
 
 export default function Dashboard() {
   let matchFetchLimit: number = 20
@@ -14,10 +15,10 @@ export default function Dashboard() {
 
   return (
 
-    <div className="flex h-2/3 w-full flex-col border border-blue-500 xl:h-full xl:flex-2/3 xl:flex-row">
+    <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
       <div className="flex-1 overflow-scroll flex flex-col gap-4 px-2">
         <div>
-          sort by given date
+          <Filter />
         </div>
         <div className="flex flex-col gap-2">
           <Log allMatches={recentMatches}/>

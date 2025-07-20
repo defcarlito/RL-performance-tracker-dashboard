@@ -44,7 +44,6 @@ export function Match({ matchData }: matchProps) {
   }
 
   const cardAccentColor = hasLocalPlayerWon() ? "green" : "red"
-  const cardGradient = `from-${cardAccentColor}-400/50`
 
   const mmrDifference = () => {
     const diff = matchData.LocalMMRAfter - matchData.LocalMMRBefore
@@ -54,9 +53,11 @@ export function Match({ matchData }: matchProps) {
   const playlist: string = matchData.Playlist === ONES_PLAYLIST ? "1v1" : "2v2"
 
   const opponents: Array<Player> = players.filter(
-    (playerInfo) => playerInfo.Team === opponentTeam
+    (playerInfo) => playerInfo.Team === opponentTeam,
   )
-  const opponentNames: string = opponents.map(player => player.Name).join(", ")
+  const opponentNames: string = opponents
+    .map((player) => player.Name)
+    .join(", ")
 
   const formatDate = (date: string): string => {
     const parts = date.split("-")
@@ -65,11 +66,15 @@ export function Match({ matchData }: matchProps) {
 
   return (
     <div
-      className={`to-card border-border flex flex-col rounded-2xl border-2 bg-gradient-to-r ${cardGradient} to-15% p-2`}
+      className={`bg-card border-border flex flex-col rounded-2xl border-2 p-2 ${hasLocalPlayerWon() ? "border-l-green-300" : "border-l-red-300"}`}
     >
       <div className="flex flex-wrap items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="text-2xl">{hasLocalPlayerWon() ? "W" : "L"}</div>
+          <div
+            className={`text-2xl ${hasLocalPlayerWon() ? "text-green-300" : "text-red-300"}`}
+          >
+            {hasLocalPlayerWon() ? "W" : "L"}
+          </div>
           <div>{score}</div>
         </div>
         <div className="text-sm">vs. {opponentNames}</div>
