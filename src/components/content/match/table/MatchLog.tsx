@@ -52,8 +52,6 @@ export function Match({ matchData }: matchProps) {
     return localTeamScore > opponentTeamScore
   }
 
-  const cardAccentColor = hasLocalPlayerWon() ? "green" : "red"
-
   const mmrDifference = () => {
     const diff = matchData.LocalMMRAfter - matchData.LocalMMRBefore
     if (diff === 0) return "0 MMR"
