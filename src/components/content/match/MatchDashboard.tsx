@@ -13,6 +13,7 @@ import {
   where,
 } from "firebase/firestore"
 
+import { Separator } from "@/components/ui/separator"
 import { Dispatch, useEffect, useMemo, useState } from "react"
 import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 
@@ -37,20 +38,30 @@ export default function Dashboard() {
   const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
 
   const { games, loading } = useQueryMatches(fetchLimit, filterDate)
+
   useQueryValidDates(setValidDates)
 
   return (
     <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
       <div className="flex flex-1 flex-col gap-8 overflow-scroll px-2">
-        <div className="bg-secondary flex justify-between rounded-xl border-2 p-2">
-          <FilterPlaylist
-            show1v1={show1v1}
-            setShow1v1={setShow1v1}
-            show2v2={show2v2}
-            setShow2v2={setShow2v2}
-          />
-          <FilterLimit fetchLimit={fetchLimit} setFetchLimit={setFetchLimit} />
-          <FilterDate validDates={validDates} setFilterDate={setFilterDate} />
+        <div className="flex justify-between gap-4">
+          <div className="bg-secondary rounded-xl border-2">
+            <FilterPlaylist
+              show1v1={show1v1}
+              setShow1v1={setShow1v1}
+              show2v2={show2v2}
+              setShow2v2={setShow2v2}
+            />
+          </div>
+          <div className="bg-secondary flex items-center rounded-xl border-2">
+            <FilterLimit
+              fetchLimit={fetchLimit}
+              setFetchLimit={setFetchLimit}
+              setFilterDate={setFilterDate}
+            />
+            <Separator orientation="vertical" className="border-1" />
+            <FilterDate validDates={validDates} setFilterDate={setFilterDate} />
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-muted-foreground flex justify-between text-sm">

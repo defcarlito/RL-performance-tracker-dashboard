@@ -16,17 +16,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import * as React from "react"
-import { CalendarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { CalendarIcon, HashIcon } from "lucide-react"
+import * as React from "react"
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
@@ -43,10 +41,21 @@ export function FilterPlaylist({
   show2v2,
   setShow2v2,
 }: FilterPlaylistProps) {
+
+  const selectedPlaylists = () => {
+    if (show1v1 && show2v2) return "1v1, 2v2"
+    else if (show1v1) return "1v1"
+    else if (show2v2) return "2v2"
+    else return "None"
+
+  }
+
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>Playlist</DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="text-md rounded-xl">Playlist {">"} {selectedPlaylists()}</Button>
+        </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuCheckboxItem
             checked={show1v1}
@@ -73,16 +82,24 @@ export function FilterPlaylist({
 type FilterLimitProps = {
   fetchLimit: number
   setFetchLimit: React.Dispatch<React.SetStateAction<number>>
+  setFilterDate: React.Dispatch<React.SetStateAction<Date | undefined>>
 }
 
-export function FilterLimit({fetchLimit, setFetchLimit}: FilterLimitProps) {
-
+export function FilterLimit({ fetchLimit, setFetchLimit, setFilterDate }: FilterLimitProps) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>Limit</DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="rounded-xl text-md">Showing last {fetchLimit} matches</Button>
+        </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuRadioGroup value={String(fetchLimit)} onValueChange={(val) => setFetchLimit(Number(val))}>
+          <DropdownMenuRadioGroup
+            value={String(fetchLimit)}
+            onValueChange={(val) => {
+              setFetchLimit(Number(val))
+              setFilterDate(undefined)
+            }}
+          >
             <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="25">25</DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="50">50</DropdownMenuRadioItem>
@@ -118,7 +135,7 @@ type FilterDateProps = {
 export function FilterDate({ validDates, setFilterDate }: FilterDateProps) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date("2025-06-01")
+    new Date("2025-06-01"),
   )
   const [month, setMonth] = React.useState<Date | undefined>(date)
   const [value, setValue] = React.useState(formatDate(date))
@@ -128,57 +145,35 @@ export function FilterDate({ validDates, setFilterDate }: FilterDateProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="relative flex gap-2">
-        <Input
-          id="date"
-          placeholder="Filter by date"
-          className="bg-background pr-10"
-          onChange={(e) => {
-            const date = new Date(e.target.value)
-            setValue(e.target.value)
-            if (isValidDate(date)) {
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button id="date-picker" variant="ghost" size="icon" className="rounded-xl">
+          <CalendarIcon className="size-5" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-auto overflow-hidden p-0"
+        align="end"
+        alignOffset={-8}
+        sideOffset={10}
+      >
+        <Calendar
+          mode="single"
+          selected={date}
+          captionLayout="dropdown"
+          disabled={(date) => {
+            if (!date) return true
+            return !validDates.has(formatDateToString(date))
+          }}
+          onSelect={(date) => {
+            if (date) {
+              setFilterDate(date)
               setDate(date)
-              setMonth(date)
+              setOpen(false)
             }
           }}
         />
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              id="date-picker"
-              variant="ghost"
-              className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
-            >
-              <CalendarIcon className="size-3.5" />
-              <span className="sr-only">Select date</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-auto overflow-hidden p-0"
-            align="end"
-            alignOffset={-8}
-            sideOffset={10}
-          >
-            <Calendar
-              mode="single"
-              selected={date}
-              captionLayout="dropdown"
-              disabled={(date) => {
-                if (!date) return true
-                return !validDates.has(formatDateToString(date))
-              }}
-              onSelect={(date) => {
-                if (date) {
-                  setFilterDate(date)
-                  setDate(date)
-                  setOpen(false)
-                }
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-    </div>
+      </PopoverContent>
+    </Popover>
   )
 }
