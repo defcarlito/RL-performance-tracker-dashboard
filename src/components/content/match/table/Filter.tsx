@@ -1,27 +1,48 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+import { useState } from "react"
+
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export default function Filter() {
+type Checked = DropdownMenuCheckboxItemProps["checked"]
+
+type FilterProps = {
+  show1v1: boolean
+  setShow1v1: React.Dispatch<React.SetStateAction<boolean>>
+  show2v2: boolean
+  setShow2v2: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function Filter({ show1v1, setShow1v1, show2v2, setShow2v2 }: FilterProps) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary">Filter by</Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger>Playlist</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
+          <DropdownMenuCheckboxItem
+            checked={show1v1}
+            onCheckedChange={() => {
+              setShow1v1((prev) => !prev)
+            }}
+          >
+            1v1
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={show2v2}
+            onCheckedChange={() => {
+              setShow2v2((prev) => !prev)
+            }}
+          >
+            2v2
+          </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

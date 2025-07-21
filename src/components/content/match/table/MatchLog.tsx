@@ -1,14 +1,23 @@
-import { LOCAL_PLAYER_ID, ONES_PLAYLIST } from "@/constants"
+import { LOCAL_PLAYER_ID, ONES_PLAYLIST, TWOS_PLAYLIST } from "@/constants"
 import { Game, Player } from "@/types/match"
 
 type logProps = {
   allMatches: Array<Game>
+  show1v1: boolean
+  show2v2: boolean
 }
 
-export default function Log({ allMatches }: logProps) {
+export default function Log({ allMatches, show1v1, show2v2 }: logProps) {
+  const filterMatches = allMatches.filter((match) => {
+    return (
+      (show1v1 && match.Playlist === ONES_PLAYLIST) ||
+      (show2v2 && match.Playlist === TWOS_PLAYLIST)
+    )
+  })
+
   return (
     <>
-      {allMatches.map((match: Game, index: number) => (
+      {filterMatches.map((match: Game, index: number) => (
         <Match matchData={match} key={index} />
       ))}
     </>
