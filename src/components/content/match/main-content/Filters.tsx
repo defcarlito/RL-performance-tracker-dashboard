@@ -165,8 +165,6 @@ export function FilterDate({ setFilterDate }: FilterDateProps) {
               mode="single"
               selected={date}
               captionLayout="dropdown"
-              month={month}
-              onMonthChange={setMonth}
               onSelect={(date) => {
                 setDate(date)
                 setValue(formatDate(date))
