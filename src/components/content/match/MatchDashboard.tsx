@@ -13,7 +13,7 @@ import {
   where,
 } from "firebase/firestore"
 
-import { useEffect, useState } from "react"
+import { Dispatch, useEffect, useMemo, useState } from "react"
 import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 
 function formatDateToYYYYMMDD(date: Date): string {
@@ -28,6 +28,8 @@ export default function Dashboard() {
   const [show1v1, setShow1v1] = useState<boolean>(true)
   const [show2v2, setShow2v2] = useState<boolean>(true)
 
+  const [validDates, setValidDates] = useState<Set<string>>(new Set())
+
   const defaultFetchLimit: number = 10
   const [fetchLimit, setFetchLimit] = useState<number>(defaultFetchLimit)
   const [matchCount, setMatchCount] = useState(fetchLimit)
@@ -35,6 +37,7 @@ export default function Dashboard() {
   const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
 
   const { games, loading } = useQueryMatches(fetchLimit, filterDate)
+  useQueryValidDates(setValidDates)
 
   return (
     <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
@@ -47,10 +50,10 @@ export default function Dashboard() {
             setShow2v2={setShow2v2}
           />
           <FilterLimit fetchLimit={fetchLimit} setFetchLimit={setFetchLimit} />
-          <FilterDate setFilterDate={setFilterDate} />
+          <FilterDate validDates={validDates} setFilterDate={setFilterDate} />
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-muted-foreground justify-between text-sm flex">
+          <div className="text-muted-foreground flex justify-between text-sm">
             <div>placeholder</div>
             <div>{matchCount} matches</div>
           </div>
@@ -67,6 +70,17 @@ export default function Dashboard() {
   )
 }
 
+function useQueryValidDates(setValidDates: any): void {
+  useEffect(() => {
+    const fetchAvaliableDates = async () => {
+      const snapshot = await getDocs(collection(db, "match_dates"))
+      const fetchedDates = new Set<string>(snapshot.docs.map((doc) => doc.id))
+      setValidDates(fetchedDates)
+    }
+    fetchAvaliableDates()
+  }, [])
+}
+
 function useQueryMatches(
   fetchLimit: number,
   filterDate?: Date,
@@ -74,21 +88,23 @@ function useQueryMatches(
   games: Array<Game>
   loading: boolean
 } {
-  let matchQuery
-  if (filterDate) {
-    matchQuery = query(
-      collection(db, "matches"),
-      where("StartDate", "==", formatDateToYYYYMMDD(filterDate)),
-      orderBy("StartEpoch", "desc"),
-    )
-  } else {
-    matchQuery = query(
-      collection(db, "matches"),
-      where("FormatVersion", "==", "8.0"),
-      orderBy("StartEpoch", "desc"),
-      limit(fetchLimit),
-    )
-  }
+  const matchQuery = useMemo(() => {
+    if (filterDate) {
+      return query(
+        collection(db, "matches"),
+        where("StartDate", "==", formatDateToYYYYMMDD(filterDate)),
+        orderBy("StartEpoch", "desc"),
+      )
+    } else {
+      return query(
+        collection(db, "matches"),
+        where("FormatVersion", "==", "8.0"),
+        orderBy("StartEpoch", "desc"),
+        limit(fetchLimit),
+      )
+    }
+  }, [fetchLimit, filterDate])
+
   return useMatchesFromQuery(matchQuery)
 }
 

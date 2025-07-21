@@ -112,22 +112,27 @@ function isValidDate(date: Date | undefined) {
 
 type FilterDateProps = {
   setFilterDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+  validDates: Set<string>
 }
 
-export function FilterDate({ setFilterDate }: FilterDateProps) {
+export function FilterDate({ validDates, setFilterDate }: FilterDateProps) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(
     new Date("2025-06-01")
   )
   const [month, setMonth] = React.useState<Date | undefined>(date)
   const [value, setValue] = React.useState(formatDate(date))
+
+  function formatDateToString(date: Date): string {
+    return date.toISOString().split("T")[0]
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={value}
-          placeholder="June 01, 2025"
+          placeholder="Filter by date"
           className="bg-background pr-10"
           onChange={(e) => {
             const date = new Date(e.target.value)
@@ -135,12 +140,6 @@ export function FilterDate({ setFilterDate }: FilterDateProps) {
             if (isValidDate(date)) {
               setDate(date)
               setMonth(date)
-            }
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowDown") {
-              e.preventDefault()
-              setOpen(true)
             }
           }}
         />
@@ -165,11 +164,16 @@ export function FilterDate({ setFilterDate }: FilterDateProps) {
               mode="single"
               selected={date}
               captionLayout="dropdown"
+              disabled={(date) => {
+                if (!date) return true
+                return !validDates.has(formatDateToString(date))
+              }}
               onSelect={(date) => {
-                setDate(date)
-                setValue(formatDate(date))
-                setOpen(false)
-                setFilterDate(date)
+                if (date) {
+                  setFilterDate(date)
+                  setDate(date)
+                  setOpen(false)
+                }
               }}
             />
           </PopoverContent>
