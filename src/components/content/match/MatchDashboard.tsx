@@ -22,6 +22,7 @@ export default function Dashboard() {
 
   const [isSortByLimit, setIsSortByLimit] = useState<boolean>(true)
   const [fetchLimit, setFetchLimit] = useState<number>(20)
+  const [matchCount, setMatchCount] = useState(fetchLimit)
 
   const { games: recentMatches, loading: loadingGames } =
     useFetchRecentMatches(fetchLimit)
@@ -39,9 +40,9 @@ export default function Dashboard() {
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-muted-foreground self-end text-sm">
-            {fetchLimit} matches
+            {matchCount} matches
           </div>
-          <Log allMatches={recentMatches} show1v1={show1v1} show2v2={show2v2} />
+          <Log allMatches={recentMatches} show1v1={show1v1} show2v2={show2v2} setMatchCount={setMatchCount}/>
         </div>
       </div>
       <div className="flex-1">pretend this is match info</div>

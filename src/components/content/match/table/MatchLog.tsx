@@ -1,19 +1,28 @@
 import { LOCAL_PLAYER_ID, ONES_PLAYLIST, TWOS_PLAYLIST } from "@/constants"
 import { Game, Player } from "@/types/match"
+import { useEffect } from "react"
 
 type logProps = {
   allMatches: Array<Game>
   show1v1: boolean
   show2v2: boolean
+  setMatchCount: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function Log({ allMatches, show1v1, show2v2 }: logProps) {
+export default function Log({
+  allMatches,
+  show1v1,
+  show2v2,
+  setMatchCount,
+}: logProps) {
   const filterMatches = allMatches.filter((match) => {
     return (
       (show1v1 && match.Playlist === ONES_PLAYLIST) ||
       (show2v2 && match.Playlist === TWOS_PLAYLIST)
     )
   })
+
+  useUpdateMatchCount(setMatchCount, filterMatches)
 
   return (
     <>
@@ -22,6 +31,15 @@ export default function Log({ allMatches, show1v1, show2v2 }: logProps) {
       ))}
     </>
   )
+}
+
+function useUpdateMatchCount(
+  setMatchCount: React.Dispatch<React.SetStateAction<number>>,
+  matches: Array<Game>,
+) {
+  useEffect(() => {
+    setMatchCount(matches.length)
+  }, [matches])
 }
 
 type matchProps = {
