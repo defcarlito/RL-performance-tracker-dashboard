@@ -21,7 +21,7 @@ export default function Dashboard() {
   const [show2v2, setShow2v2] = useState<boolean>(true)
 
   const [isFilterByLimit, setIsFilterByLimit] = useState<boolean>(true)
-  const defaultFetchLimit: number = 25
+  const defaultFetchLimit: number = 10
   const [fetchLimit, setFetchLimit] = useState<number>(defaultFetchLimit)
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
@@ -117,9 +117,7 @@ function useFetchRecentMatches(fetchLimit: number) {
           LocalMMRBefore: data.LocalMMRBefore,
           MatchPlayerInfo: gamePlayers,
           Playlist: data.Playlist,
-          StartDate: data.StartDate,
-          StartEpoch: data.StartEpoch,
-          StartTime: data.StartTime,
+          MatchDate: new Date(data.StartEpoch * 1000),
           Team0Score: data.Team0Score,
           Team1Score: data.Team1Score,
           bForfeit: data.bForfeit,

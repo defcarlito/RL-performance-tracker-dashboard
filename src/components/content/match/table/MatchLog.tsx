@@ -84,11 +84,6 @@ export function Match({ matchData }: matchProps) {
     .map((player) => player.Name)
     .join(", ")
 
-  const formatDate = (date: string): string => {
-    const parts = date.split("-")
-    return `${+parts[1]}/${+parts[2]}/${parts[0]}`
-  }
-
   return (
     <div
       className={`bg-card border-border flex flex-col rounded-2xl border-2 p-2 ${hasLocalPlayerWon() ? "border-l-green-300" : "border-l-red-300"}`}
@@ -103,7 +98,7 @@ export function Match({ matchData }: matchProps) {
           <div>{score}</div>
         </div>
         <div className="text-sm">vs. {opponentNames}</div>
-        <div>{formatDate(matchData.StartDate)}</div>
+        <div>{matchData.MatchDate.toLocaleDateString()}</div>
       </div>
       <div className="align-start flex flex-wrap justify-between">
         <div>{mmrDifference()}</div>

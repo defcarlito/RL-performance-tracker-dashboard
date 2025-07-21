@@ -5,9 +5,7 @@ export type Game = {
   LocalMMRBefore: number
   MatchPlayerInfo: Array<Player>
   Playlist: number
-  StartDate: string
-  StartEpoch: number
-  StartTime: string
+  MatchDate: Date
   Team0Score: number
   Team1Score: number
   bForfeit: boolean
