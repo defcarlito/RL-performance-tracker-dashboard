@@ -10,17 +10,20 @@ import { useEffect, useState } from "react"
 import Filter from "./table/Filter"
 
 export default function Dashboard() {
-  let matchFetchLimit: number = 20
-  const {games: recentMatches, loading: loadingGames } = useFetchRecentMatches(matchFetchLimit)
+
+  const [isSortByLimit, setIsSortByLimit] = useState<boolean>(true)
+  const [fetchLimit, setFetchLimit] = useState<number>(20)
+  const {games: recentMatches, loading: loadingGames } = useFetchRecentMatches(fetchLimit)
 
   return (
 
     <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
-      <div className="flex-1 overflow-scroll flex flex-col gap-4 px-2">
-        <div>
+      <div className="flex-1 overflow-scroll flex flex-col gap-8 px-2">
+        <div className="bg-secondary border-2 rounded-xl p-2">
           <Filter />
         </div>
         <div className="flex flex-col gap-2">
+          <div className="self-end text-sm text-muted-foreground">{fetchLimit} matches</div>
           <Log allMatches={recentMatches}/>
         </div>
       </div>
