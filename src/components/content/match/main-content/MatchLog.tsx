@@ -98,7 +98,9 @@ export function Match({ matchData }: matchProps) {
           <div>{score}</div>
         </div>
         <div className="text-sm">vs. {opponentNames}</div>
-        <div className="text-muted-foreground">{matchData.MatchDate.toLocaleDateString()}</div>
+        <div className="text-muted-foreground">
+          {matchData.MatchDate.toLocaleDateString()}
+        </div>
       </div>
       <div className="align-start flex flex-wrap justify-between text-sm text-muted-foreground">
         <div>{mmrDifference()}</div>

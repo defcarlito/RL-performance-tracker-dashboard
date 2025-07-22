@@ -7,13 +7,13 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBW2D4CghUuYmcHSHgz9NJS4Z1HVeWRJqw",
-  authDomain: "rl-stat-puller.firebaseapp.com",
-  projectId: "rl-stat-puller",
-  storageBucket: "rl-stat-puller.firebasestorage.app",
-  messagingSenderId: "1057204807590",
-  appId: "1:1057204807590:web:0f92dacce6d2c5a3b7d167",
-  measurementId: "G-XCJNKW65ZD"
+  apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FB_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FB_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FB_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FB_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FB_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FB_MEASUREMENT_ID
 };
 
 // Initialize Firebase
@@ -21,3 +21,4 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
+
