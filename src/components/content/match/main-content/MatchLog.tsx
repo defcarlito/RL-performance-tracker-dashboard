@@ -1,4 +1,5 @@
 import { LOCAL_PLAYER_ID, ONES_PLAYLIST, TWOS_PLAYLIST } from "@/constants"
+import { FilterType } from "@/types/filter"
 import { Game, Player } from "@/types/match"
 import { useEffect } from "react"
 
@@ -7,6 +8,7 @@ type logProps = {
   show1v1: boolean
   show2v2: boolean
   setMatchCount: React.Dispatch<React.SetStateAction<number>>
+  filterBy: FilterType
 }
 
 export default function Log({
@@ -14,6 +16,7 @@ export default function Log({
   show1v1,
   show2v2,
   setMatchCount,
+  filterBy,
 }: logProps) {
   const filterMatches = allMatches.filter((match) => {
     return (
@@ -27,7 +30,7 @@ export default function Log({
   return (
     <>
       {filterMatches.map((match: Game, index: number) => (
-        <Match matchData={match} key={index} />
+        <Match matchData={match} key={index} filterBy={filterBy} />
       ))}
     </>
   )
@@ -44,9 +47,10 @@ function useUpdateMatchCount(
 
 type matchProps = {
   matchData: Game
+  filterBy: FilterType
 }
 
-export function Match({ matchData }: matchProps) {
+export function Match({ matchData, filterBy }: matchProps) {
   const players: Array<Player> = matchData.MatchPlayerInfo
   const localPlayer: Player = players.find(
     (playerInfo) => playerInfo.EpicAccountId === LOCAL_PLAYER_ID,
@@ -72,8 +76,8 @@ export function Match({ matchData }: matchProps) {
 
   const mmrDifference = () => {
     const diff = matchData.LocalMMRAfter - matchData.LocalMMRBefore
-    if (diff === 0) return "0 MMR"
-    return diff > 0 ? `+${diff} MMR` : `-${Math.abs(diff)} MMR`
+    if (diff === 0) return ""
+    return diff > 0 ? `(+${diff})` : `(-${Math.abs(diff)})`
   }
   const playlist: string = matchData.Playlist === ONES_PLAYLIST ? "1v1" : "2v2"
 
@@ -99,11 +103,16 @@ export function Match({ matchData }: matchProps) {
         </div>
         <div className="text-sm">vs. {opponentNames}</div>
         <div className="text-muted-foreground">
-          {matchData.MatchDate.toLocaleDateString()}
+          {filterBy === "limit"
+            ? matchData.MatchDate.toLocaleDateString()
+            : matchData.MatchDate.toLocaleTimeString()}
         </div>
       </div>
-      <div className="align-start flex flex-wrap justify-between text-sm text-muted-foreground">
-        <div>{mmrDifference()}</div>
+      <div className="align-start text-muted-foreground flex flex-wrap justify-between text-sm">
+        <div>
+          {matchData.LocalMMRAfter} MMR | Prev: {matchData.LocalMMRBefore} {" "}
+          {mmrDifference()}
+        </div>
         <div>{playlist}</div>
       </div>
     </div>

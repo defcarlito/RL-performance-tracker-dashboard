@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { FilterType } from "@/types/filter"
 import { CalendarIcon, HashIcon } from "lucide-react"
 import * as React from "react"
 
@@ -41,20 +42,20 @@ export function FilterPlaylist({
   show2v2,
   setShow2v2,
 }: FilterPlaylistProps) {
-
   const selectedPlaylists = () => {
     if (show1v1 && show2v2) return "1v1, 2v2"
     else if (show1v1) return "1v1"
     else if (show2v2) return "2v2"
     else return "None"
-
   }
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="text-md rounded-xl">Playlist {">"} {selectedPlaylists()}</Button>
+          <Button variant="ghost" className="text-md rounded-xl">
+            Show playlists {">"} {selectedPlaylists()}
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuCheckboxItem
@@ -83,14 +84,36 @@ type FilterLimitProps = {
   fetchLimit: number
   setFetchLimit: React.Dispatch<React.SetStateAction<number>>
   setFilterDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+  filterBy: FilterType
+  setFilterBy: React.Dispatch<React.SetStateAction<FilterType>>
 }
 
-export function FilterLimit({ fetchLimit, setFetchLimit, setFilterDate }: FilterLimitProps) {
+export function FilterLimit({
+  fetchLimit,
+  setFetchLimit,
+  setFilterDate,
+  filterBy,
+  setFilterBy,
+}: FilterLimitProps) {
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="rounded-xl text-md">Showing last {fetchLimit} matches</Button>
+          {filterBy === "limit" ? (
+            <Button
+              variant="ghost"
+              className="text-md rounded-l-xl rounded-r-none"
+            >
+              Showing last {fetchLimit} matches
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              className="text-md text-border bg-muted rounded-l-xl rounded-r-none"
+            >
+              Showing last {fetchLimit} matches
+            </Button>
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuRadioGroup
@@ -98,6 +121,7 @@ export function FilterLimit({ fetchLimit, setFetchLimit, setFilterDate }: Filter
             onValueChange={(val) => {
               setFetchLimit(Number(val))
               setFilterDate(undefined)
+              setFilterBy("limit")
             }}
           >
             <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
@@ -120,25 +144,23 @@ function formatDate(date: Date | undefined) {
     year: "numeric",
   })
 }
-function isValidDate(date: Date | undefined) {
-  if (!date) {
-    return false
-  }
-  return !isNaN(date.getTime())
-}
 
 type FilterDateProps = {
   setFilterDate: React.Dispatch<React.SetStateAction<Date | undefined>>
   validDates: Set<string>
+  filterBy: FilterType
+  setFilterBy: React.Dispatch<React.SetStateAction<FilterType>>
 }
 
-export function FilterDate({ validDates, setFilterDate }: FilterDateProps) {
-  const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(
-    new Date("2025-06-01"),
-  )
-  const [month, setMonth] = React.useState<Date | undefined>(date)
-  const [value, setValue] = React.useState(formatDate(date))
+export function FilterDate({
+  validDates,
+  setFilterDate,
+  filterBy,
+  setFilterBy,
+}: FilterDateProps) {
+  const [open, setOpen] = useState(false)
+
+  const [date, setDate] = useState<Date>(new Date())
 
   function formatDateToString(date: Date): string {
     return date.toISOString().split("T")[0]
@@ -147,9 +169,23 @@ export function FilterDate({ validDates, setFilterDate }: FilterDateProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button id="date-picker" variant="ghost" size="icon" className="rounded-xl">
-          <CalendarIcon className="size-5" />
-        </Button>
+        {filterBy === "date" ? (
+          <Button
+            id="date-picker"
+            variant="ghost"
+            className="text-md rounded-l-none rounded-r-xl"
+          >
+            {formatDateToString(date)} <CalendarIcon className="size-5" />
+          </Button>
+        ) : (
+          <Button
+            id="date-picker"
+            variant="ghost"
+            className="text-md text-border bg-muted rounded-l-none rounded-r-xl"
+          >
+            {formatDateToString(date)} <CalendarIcon className="size-5" />
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent
         className="w-auto overflow-hidden p-0"
@@ -170,6 +206,7 @@ export function FilterDate({ validDates, setFilterDate }: FilterDateProps) {
               setFilterDate(date)
               setDate(date)
               setOpen(false)
+              setFilterBy("date")
             }
           }}
         />

@@ -3,6 +3,7 @@
 import Log from "./main-content/MatchLog"
 
 import { db } from "@/firebase/config"
+import { FilterType } from "@/types/filter"
 import { Game, Goal, Player } from "@/types/match"
 import {
   collection,
@@ -14,14 +15,14 @@ import {
 } from "firebase/firestore"
 
 import { Separator } from "@/components/ui/separator"
-import { Dispatch, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import Details from "./details/Details"
 import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 
 function formatDateToYYYYMMDD(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
   const day = String(date.getDate()).padStart(2, "0")
-
   return `${year}-${month}-${day}`
 }
 
@@ -39,28 +40,43 @@ export default function Dashboard() {
 
   const { games, loading } = useQueryMatches(fetchLimit, filterDate)
 
+  const [FilterBy, setFilterBy] = useState<FilterType>("limit")
+
   useQueryValidDates(setValidDates)
 
   return (
     <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
       <div className="flex flex-1 flex-col gap-8 overflow-scroll px-2">
-        <div className="flex justify-between gap-4">
-          <div className="bg-secondary rounded-xl border-2">
-            <FilterPlaylist
-              show1v1={show1v1}
-              setShow1v1={setShow1v1}
-              show2v2={show2v2}
-              setShow2v2={setShow2v2}
-            />
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h1>Show Matches</h1>
+            <div className="bg-secondary w-fit rounded-xl border-2">
+              <FilterPlaylist
+                show1v1={show1v1}
+                setShow1v1={setShow1v1}
+                show2v2={show2v2}
+                setShow2v2={setShow2v2}
+              />
+            </div>
           </div>
-          <div className="bg-secondary flex items-center rounded-xl border-2">
-            <FilterLimit
-              fetchLimit={fetchLimit}
-              setFetchLimit={setFetchLimit}
-              setFilterDate={setFilterDate}
-            />
-            <Separator orientation="vertical" className="border-1" />
-            <FilterDate validDates={validDates} setFilterDate={setFilterDate} />
+          <div className="flex flex-col gap-1">
+            <h1>Show last matches OR filter by date</h1>
+            <div className="bg-secondary flex w-fit items-center rounded-xl border-2">
+              <FilterLimit
+                fetchLimit={fetchLimit}
+                setFetchLimit={setFetchLimit}
+                setFilterDate={setFilterDate}
+                filterBy={FilterBy}
+                setFilterBy={setFilterBy}
+              />
+              <Separator orientation="vertical" className="border-1" />
+              <FilterDate
+                validDates={validDates}
+                setFilterDate={setFilterDate}
+                filterBy={FilterBy}
+                setFilterBy={setFilterBy}
+              />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -73,10 +89,13 @@ export default function Dashboard() {
             show1v1={show1v1}
             show2v2={show2v2}
             setMatchCount={setMatchCount}
+            filterBy={FilterBy}
           />
         </div>
       </div>
-      <div className="flex-1">pretend this is match info</div>
+      <div className="flex-1">
+        <Details allMatches={games} />
+      </div>
     </div>
   )
 }
