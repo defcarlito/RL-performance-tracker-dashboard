@@ -15,18 +15,10 @@ import {
 import { Game } from "@/types/match"
 import { TrendingUp } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 export const description = "A simple area chart"
 
-const chartMonths = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -68,28 +60,20 @@ export default function MMRChart({ allMatches }: mmrChartProps) {
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>
-            <AreaChart
-              accessibilityLayer
-              data={chartMonths}
-              margin={{
-                left: 12,
-                right: 12,
-              }}
-            >
+            <AreaChart accessibilityLayer data={chartData}>
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="month"
+                dataKey="time"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
               />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
               />
               <Area
-                dataKey="desktop"
+                dataKey="MMR"
                 type="natural"
                 fill="var(--color-desktop)"
                 fillOpacity={0.4}
