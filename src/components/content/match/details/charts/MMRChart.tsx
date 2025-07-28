@@ -31,9 +31,17 @@ type mmrChartProps = {
 }
 
 export default function MMRChart({ allMatches }: mmrChartProps) {
-  const [chartData, setChartData] = useState([])
+
+  type ChartPoint = {
+    MMR: number
+    time: number
+  }
+
+  const [chartData, setChartData] = useState<ChartPoint[]>([])
 
   useEffect(() => {
+
+
     const data = () => {
       const arr = allMatches.map((match) => ({
         MMR: match.LocalMMRAfter,
