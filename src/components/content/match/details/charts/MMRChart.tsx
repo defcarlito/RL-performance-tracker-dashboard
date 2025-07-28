@@ -31,7 +31,6 @@ type mmrChartProps = {
 }
 
 export default function MMRChart({ allMatches }: mmrChartProps) {
-
   type ChartPoint = {
     MMR: number
     time: number
@@ -39,9 +38,8 @@ export default function MMRChart({ allMatches }: mmrChartProps) {
 
   const [chartData, setChartData] = useState<ChartPoint[]>([])
 
+  // change into custom hook
   useEffect(() => {
-
-
     const data = () => {
       const arr = allMatches.map((match) => ({
         MMR: match.LocalMMRAfter,
@@ -53,28 +51,26 @@ export default function MMRChart({ allMatches }: mmrChartProps) {
     setChartData(data())
   }, [allMatches])
 
-  useEffect(() => {
-    console.log(chartData)
-  }, [chartData])
-
   return (
     <>
       <Card>
         <CardHeader>
           <CardTitle>MMR Change</CardTitle>
           <CardDescription>
-            Showing the change in MMR over the last # days.
+            Showing the change in MMR over the last # matches.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>
             <AreaChart accessibilityLayer data={chartData}>
               <CartesianGrid vertical={false} />
+              <YAxis
+                domain={["dataMin - 100", "dataMax + 100"]}
+                dataKey="MMR"
+                width={0}
+              />
               <XAxis
                 dataKey="time"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
               />
               <ChartTooltip
                 cursor={false}

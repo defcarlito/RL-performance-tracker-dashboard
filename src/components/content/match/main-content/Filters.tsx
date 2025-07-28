@@ -26,8 +26,7 @@ import {
 import { FilterType } from "@/types/filter"
 import { CalendarIcon, HashIcon } from "lucide-react"
 import * as React from "react"
-
-type Checked = DropdownMenuCheckboxItemProps["checked"]
+import { OnesBadge, TwosBadge } from "@/components/ui/custom-badges"
 
 type FilterPlaylistProps = {
   show1v1: boolean
@@ -43,10 +42,10 @@ export function FilterPlaylist({
   setShow2v2,
 }: FilterPlaylistProps) {
   const selectedPlaylists = () => {
-    if (show1v1 && show2v2) return "1v1, 2v2"
-    else if (show1v1) return "1v1"
-    else if (show2v2) return "2v2"
-    else return "None"
+    if (show1v1 && show2v2) return <><OnesBadge /> <TwosBadge /></>
+    else if (show1v1) return <OnesBadge />
+    else if (show2v2) return <TwosBadge />
+    else return "None selected"
   }
 
   return (
@@ -132,17 +131,6 @@ export function FilterLimit({
       </DropdownMenu>
     </>
   )
-}
-
-function formatDate(date: Date | undefined) {
-  if (!date) {
-    return ""
-  }
-  return date.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  })
 }
 
 type FilterDateProps = {

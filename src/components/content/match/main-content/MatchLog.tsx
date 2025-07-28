@@ -1,3 +1,4 @@
+import { OnesBadge, TwosBadge } from "@/components/ui/custom-badges"
 import { LOCAL_PLAYER_ID, ONES_PLAYLIST, TWOS_PLAYLIST } from "@/constants"
 import { FilterType } from "@/types/filter"
 import { Game, Player } from "@/types/match"
@@ -79,7 +80,6 @@ export function Match({ matchData, filterBy }: matchProps) {
     if (diff === 0) return ""
     return diff > 0 ? `(+${diff})` : `(-${Math.abs(diff)})`
   }
-  const playlist: string = matchData.Playlist === ONES_PLAYLIST ? "1v1" : "2v2"
 
   const opponents: Array<Player> = players.filter(
     (playerInfo) => playerInfo.Team === opponentTeam,
@@ -113,7 +113,7 @@ export function Match({ matchData, filterBy }: matchProps) {
           {matchData.LocalMMRAfter} MMR | Prev: {matchData.LocalMMRBefore} {" "}
           {mmrDifference()}
         </div>
-        <div>{playlist}</div>
+        <div>{matchData.Playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}</div>
       </div>
     </div>
   )

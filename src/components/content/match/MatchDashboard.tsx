@@ -32,7 +32,7 @@ export default function Dashboard() {
 
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
 
-  const defaultFetchLimit: number = 10
+  const defaultFetchLimit: number = 25
   const [fetchLimit, setFetchLimit] = useState<number>(defaultFetchLimit)
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
@@ -80,8 +80,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-muted-foreground flex justify-between text-sm">
-            <div>placeholder</div>
+          <div className="text-muted-foreground flex justify-end text-sm">
             <div>{matchCount} matches</div>
           </div>
           <Log
