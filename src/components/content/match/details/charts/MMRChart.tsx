@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
@@ -15,9 +16,9 @@ import {
 import { ONES_PLAYLIST } from "@/constants"
 import { Game } from "@/types/match"
 import { match } from "assert"
-import { TrendingUp } from "lucide-react"
+import { TrendingDown, TrendingUp } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, ReferenceLine, XAxis, YAxis } from "recharts"
 
 export const description = "A simple area chart"
 
@@ -43,6 +44,9 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
 
   const title: string = playlist === ONES_PLAYLIST ? "1v1" : "2v2"
 
+  const areaColor: string =
+    playlist === ONES_PLAYLIST ? "var(--chart-1)" : "var(--chart-4)"
+
   const dateCount = () => {
     const uniqueDates = new Set(
       allMatches.map((match) => match.MatchDate.toDateString()),
@@ -55,11 +59,47 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
   const matchCount = allMatches.length
   const matchString = matchCount === 1 ? "match" : "matches"
 
+  const mmrNet = (): number => {
+    if (data.length > 0) {
+      return data[data.length - 1].MMR - data[0].MMR
+    }
+    return 0
+  }
+
+  const summaryText = () => {
+    const net: number = mmrNet()
+    if (net > 0) {
+      return (
+        <>
+          Netting a {net} increase in MMR <TrendingUp className="h-4 w-4 text-green-300" />
+        </>
+      )
+    } else if (net < 0) {
+      return (
+        <>
+          Netting a {Math.abs(net)} decrease in MMR <TrendingDown className="h-4 w-4 text-red-300" />
+        </>
+      )
+    } else {
+      return <>No change in MMR.</>
+    }
+  }
+
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>{title}</CardTitle>
+          <CardTitle className="text-lg">
+            {playlist === ONES_PLAYLIST ? (
+              <Badge className="bg-chart-1/60 text-foreground text-xl font-medium">
+                {title}
+              </Badge>
+            ) : (
+              <Badge className="bg-chart-4/60 text-foreground text-xl font-medium">
+                {title}
+              </Badge>
+            )}
+          </CardTitle>
           <CardDescription>
             Showing the change in MMR over the last {matchCount} {matchString}.
           </CardDescription>
@@ -67,24 +107,30 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
         <CardContent>
           <ChartContainer config={chartConfig}>
             <AreaChart accessibilityLayer data={data}>
-              <CartesianGrid vertical={false} />
               <YAxis
                 domain={["dataMin - 100", "dataMax + 100"]}
                 dataKey="MMR"
                 width={0}
               />
-              <XAxis dataKey="time" />
+              <XAxis dataKey="time" height={0} />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
               />
               <Area
                 dataKey="MMR"
-                type="natural"
-                fill="var(--color-desktop)"
-                fillOpacity={0.4}
-                stroke="var(--color-desktop)"
+                type="monotone"
+                fill={areaColor}
+                fillOpacity={0.3}
+                stroke={areaColor}
               />
+              {data.length > 0 && (
+                <ReferenceLine
+                  y={data[0].MMR}
+                  stroke="var(--accent)"
+                  label={data[0].MMR}
+                />
+              )}
             </AreaChart>
           </ChartContainer>
         </CardContent>
@@ -92,8 +138,7 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
           <div className="flex w-full items-start gap-2 text-sm">
             <div className="grid gap-2">
               <div className="flex items-center gap-2 leading-none font-medium">
-                Trending a net ## MMR increase{" "}
-                <TrendingUp className="h-4 w-4" />
+                {summaryText()}
               </div>
               <div className="text-muted-foreground flex items-center gap-2 leading-none">
                 Over {dateCount()} {dateString}.
