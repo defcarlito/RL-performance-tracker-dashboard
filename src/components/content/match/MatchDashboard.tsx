@@ -1,6 +1,6 @@
 "use client"
 
-import Log from "./main-content/MatchLog"
+import Log from "./main-content/match-log/MatchLog"
 
 import { db } from "@/firebase/config"
 import { FilterType } from "@/types/filter"
@@ -93,7 +93,7 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="flex-1">
-        <Details allMatches={games} />
+        <Details allMatches={games} show1v1={show1v1} show2v2={show2v2} />
       </div>
     </div>
   )

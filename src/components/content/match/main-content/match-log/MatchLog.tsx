@@ -3,6 +3,7 @@ import { LOCAL_PLAYER_ID, ONES_PLAYLIST, TWOS_PLAYLIST } from "@/constants"
 import { FilterType } from "@/types/filter"
 import { Game, Player } from "@/types/match"
 import { useEffect } from "react"
+import MatchDetails from "./collapsible/MatchDetails"
 
 type logProps = {
   allMatches: Array<Game>
@@ -108,12 +109,13 @@ export function Match({ matchData, filterBy }: matchProps) {
             : matchData.MatchDate.toLocaleTimeString()}
         </div>
       </div>
-      <div className="align-start text-muted-foreground flex flex-wrap justify-between text-sm">
-        <div>
-          {matchData.LocalMMRAfter} MMR | Prev: {matchData.LocalMMRBefore} {" "}
-          {mmrDifference()}
+      <div className="align-start text-muted-foreground flex flex-wrap justify-between text-sm relative">
+        <div className="w-full">
+          <MatchDetails matchData={matchData} />
         </div>
-        <div>{matchData.Playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}</div>
+        <div className="absolute top-0 right-0">
+          {matchData.Playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}
+        </div>
       </div>
     </div>
   )

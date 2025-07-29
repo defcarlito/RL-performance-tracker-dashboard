@@ -12,6 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { ONES_PLAYLIST } from "@/constants"
 import { Game } from "@/types/match"
 import { TrendingUp } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -28,50 +29,42 @@ const chartConfig = {
 
 type mmrChartProps = {
   allMatches: Array<Game>
+  playlist: number
 }
 
-export default function MMRChart({ allMatches }: mmrChartProps) {
-  type ChartPoint = {
-    MMR: number
-    time: number
-  }
+type ChartPoint = {
+  MMR: number
+  time: number
+}
 
-  const [chartData, setChartData] = useState<ChartPoint[]>([])
+export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
+  const data: ChartPoint[] = useFetchTimeFromAllMatches(allMatches)
 
-  // change into custom hook
-  useEffect(() => {
-    const data = () => {
-      const arr = allMatches.map((match) => ({
-        MMR: match.LocalMMRAfter,
-        time: match.MatchDate.getTime() / 1000,
-      }))
-      return arr.reverse()
-    }
+  const title: string = playlist === ONES_PLAYLIST ? "1v1" : "2v2"
 
-    setChartData(data())
-  }, [allMatches])
+  const matchCount = allMatches.length
+  const matchString =
+    matchCount === 1 ? `${matchCount} match` : `${matchCount} matches`
 
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>MMR Change</CardTitle>
+          <CardTitle>{title}</CardTitle>
           <CardDescription>
-            Showing the change in MMR over the last # matches.
+            Showing the change in MMR over the last {matchString}.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>
-            <AreaChart accessibilityLayer data={chartData}>
+            <AreaChart accessibilityLayer data={data}>
               <CartesianGrid vertical={false} />
               <YAxis
                 domain={["dataMin - 100", "dataMax + 100"]}
                 dataKey="MMR"
                 width={0}
               />
-              <XAxis
-                dataKey="time"
-              />
+              <XAxis dataKey="time" />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
@@ -94,7 +87,7 @@ export default function MMRChart({ allMatches }: mmrChartProps) {
                 <TrendingUp className="h-4 w-4" />
               </div>
               <div className="text-muted-foreground flex items-center gap-2 leading-none">
-                For MM/DD/YYYY
+                Over # days
               </div>
             </div>
           </div>
@@ -102,4 +95,22 @@ export default function MMRChart({ allMatches }: mmrChartProps) {
       </Card>
     </>
   )
+}
+
+function useFetchTimeFromAllMatches(allMatches: Game[]) {
+  const [chartData, setChartData] = useState<ChartPoint[]>([])
+
+  useEffect(() => {
+    const data = () => {
+      const arr = allMatches.map((match) => ({
+        MMR: match.LocalMMRAfter,
+        time: match.MatchDate.getTime() / 1000,
+      }))
+      return arr.reverse()
+    }
+
+    setChartData(data())
+  }, [allMatches])
+
+  return chartData
 }
