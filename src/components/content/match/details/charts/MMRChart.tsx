@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/chart"
 import { ONES_PLAYLIST } from "@/constants"
 import { Game } from "@/types/match"
+import { match } from "assert"
 import { TrendingUp } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
@@ -42,9 +43,17 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
 
   const title: string = playlist === ONES_PLAYLIST ? "1v1" : "2v2"
 
+  const dateCount = () => {
+    const uniqueDates = new Set(
+      allMatches.map((match) => match.MatchDate.toDateString()),
+    )
+    return uniqueDates.size
+  }
+
+  const dateString = dateCount() === 1 ? "day" : "days"
+
   const matchCount = allMatches.length
-  const matchString =
-    matchCount === 1 ? `${matchCount} match` : `${matchCount} matches`
+  const matchString = matchCount === 1 ? "match" : "matches"
 
   return (
     <>
@@ -52,7 +61,7 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
         <CardHeader>
           <CardTitle>{title}</CardTitle>
           <CardDescription>
-            Showing the change in MMR over the last {matchString}.
+            Showing the change in MMR over the last {matchCount} {matchString}.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -87,7 +96,7 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
                 <TrendingUp className="h-4 w-4" />
               </div>
               <div className="text-muted-foreground flex items-center gap-2 leading-none">
-                Over # days
+                Over {dateCount()} {dateString}.
               </div>
             </div>
           </div>
