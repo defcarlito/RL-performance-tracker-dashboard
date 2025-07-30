@@ -21,7 +21,7 @@ export default function Details({
   )
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-1 p-2">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-1">
       <h1 className="text-2xl font-medium">MMR Changes</h1>
       <div className="flex flex-row gap-2 xl:flex-col xl:w-[75%] w-full h-full justify-center">
         <MMRChart allMatches={onesMatchesOnly} playlist={ONES_PLAYLIST} />
