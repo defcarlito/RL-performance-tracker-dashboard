@@ -39,16 +39,8 @@ export default function MatchFilterBar({
   return (
     <>
       <div className="flex flex-col gap-1">
-        <h1>Show last matches OR filter by date</h1>
-        <div className="bg-secondary flex w-fit items-center rounded-xl border-2 flex-col">
-          <div>
-            <FilterPlaylist
-              show1v1={show1v1}
-              setShow1v1={setShow1v1}
-              show2v2={show2v2}
-              setShow2v2={setShow2v2}
-            />
-          </div>
+        <h1 className="font-medium text-xl">Filters</h1>
+        <div className="flex flex-col gap-2">
           <div className="bg-secondary flex w-fit items-center rounded-xl border-2">
             <FilterLimit fetchLimit={fetchLimit} filterBy={filterBy} />
             <Separator orientation="vertical" className="border-1" />
@@ -56,6 +48,14 @@ export default function MatchFilterBar({
               filterDate={filterDate}
               validDates={validDates}
               filterBy={filterBy}
+            />
+          </div>
+          <div className="bg-secondary flex w-fit items-center rounded-xl border-2 flex-col">
+            <FilterPlaylist
+              show1v1={show1v1}
+              setShow1v1={setShow1v1}
+              show2v2={show2v2}
+              setShow2v2={setShow2v2}
             />
           </div>
         </div>
