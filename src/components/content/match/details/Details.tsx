@@ -23,7 +23,7 @@ export default function Details({
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-1">
-      <div className="flex flex-row gap-2 xl:flex-col xl:w-[75%] w-full h-full justify-center">
+      <div className="flex flex-row gap-2 xl:flex-col xl:py-8 xl:p-0 xl:pr-8 p-8 w-full h-full justify-center">
         <MMRChart allMatches={onesMatchesOnly} playlist={ONES_PLAYLIST} />
         <MMRChart allMatches={twosMatchesOnly} playlist={TWOS_PLAYLIST} />
       </div>

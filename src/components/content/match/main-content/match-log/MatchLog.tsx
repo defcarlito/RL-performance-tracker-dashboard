@@ -85,7 +85,7 @@ export function Match({ matchData, filterBy }: matchProps) {
 
   return (
     <div
-      className={`bg-card border-border flex flex-col rounded-2xl border-2 p-2 ${hasLocalPlayerWon() ? "border-l-green-300" : "border-l-red-300"}`}
+      className={`bg-card border-border flex flex-col border-l-2 p-2 ${hasLocalPlayerWon() ? "border-l-green-300" : "border-l-red-300"}`}
     >
       <div className="flex flex-wrap items-center justify-between">
         <div className="flex items-center gap-2">

@@ -87,7 +87,7 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
 
   return (
     <>
-      <Card className="h-full">
+      <Card className="h-full shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">
             {playlist === ONES_PLAYLIST ? (

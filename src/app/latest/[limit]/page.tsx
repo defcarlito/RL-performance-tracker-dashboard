@@ -23,8 +23,8 @@ export default function LatestMatchesPage({
   const [show2v2, setShow2v2] = useState<boolean>(true)
 
   return (
-    <div className="0 flex h-screen flex-wrap xl:py-16">
-      <div className="flex h-1/3 w-full flex-col items-center justify-center gap-4 xl:h-full xl:flex-1/3">
+    <div className="0 flex h-screen flex-wrap">
+      <div className="flex h-1/3 w-full flex-col items-center justify-center gap-4 xl:h-full xl:flex-1/3 bg-sidebar">
         {/* profile info section */}
         <div>
           <MatchFilterBar

@@ -50,18 +50,18 @@ export default function Dashboard({
 
   return (
     <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
-      <div className="flex flex-1 flex-col gap-8 overflow-scroll px-2">
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-8 px-2">
+        <div className="flex flex-col gap-2 p-8 overflow-scroll">
           <div className="text-muted-foreground flex justify-end text-sm">
-            <div>{matchCount} matches</div>
+            {matchCount} matches
           </div>
-          <Log
-            allMatches={games}
-            show1v1={show1v1}
-            show2v2={show2v2}
-            setMatchCount={setMatchCount}
-            filterBy={filterBy}
-          />
+            <Log
+              allMatches={games}
+              show1v1={show1v1}
+              show2v2={show2v2}
+              setMatchCount={setMatchCount}
+              filterBy={filterBy}
+            />
         </div>
       </div>
       <div className="flex-1">
