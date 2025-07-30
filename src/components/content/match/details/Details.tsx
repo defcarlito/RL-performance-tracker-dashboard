@@ -13,6 +13,7 @@ export default function Details({
   show1v1,
   show2v2,
 }: detailsProps) {
+  
   const onesMatchesOnly = allMatches.filter(
     (game) => game.Playlist === ONES_PLAYLIST,
   )

@@ -105,7 +105,7 @@ export function Match({ matchData, filterBy }: matchProps) {
       </div>
       <div className="align-start text-muted-foreground flex flex-wrap justify-between text-sm relative">
         <div className="w-full">
-          <MatchDetails matchData={matchData} />
+          <MatchDetails matchData={matchData} filterBy={filterBy} />
         </div>
         <div className="absolute top-0 right-0">
           {matchData.Playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}

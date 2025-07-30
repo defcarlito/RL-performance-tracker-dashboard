@@ -25,12 +25,14 @@ import {
   Minus,
 } from "lucide-react"
 import { useState } from "react"
+import { FilterType } from "@/types/filter"
 
 type matchProps = {
   matchData: Game
+  filterBy: FilterType
 }
 
-export default function MatchDetails({ matchData }: matchProps) {
+export default function MatchDetails({ matchData, filterBy }: matchProps) {
   const playerInfo: Player[] = matchData.MatchPlayerInfo
 
   const sortedByLocalTeam = [...playerInfo].sort((a, b) => {
@@ -147,7 +149,7 @@ export default function MatchDetails({ matchData }: matchProps) {
                 <span>Prev: {matchData.LocalMMRBefore}</span>
               </div>
               <div>
-                {matchData.MatchDate.toLocaleTimeString()}
+                {filterBy === "limit" ? matchData.MatchDate.toLocaleTimeString() : matchData.MatchDate.toLocaleDateString()}
               </div>
             </div>
           </div>

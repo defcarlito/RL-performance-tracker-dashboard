@@ -106,14 +106,14 @@ export function FilterLimit({
               variant="ghost"
               className="text-md rounded-l-xl rounded-r-none"
             >
-              Showing last {fetchLimit} matches
+              Showing the last {fetchLimit} matches
             </Button>
           ) : (
             <Button
               variant="ghost"
               className="text-md text-border bg-muted rounded-l-xl rounded-r-none"
             >
-              Showing last {fetchLimit} matches
+              Filter by latest matches
             </Button>
           )}
         </DropdownMenuTrigger>
@@ -125,9 +125,9 @@ export function FilterLimit({
               router.push(`/latest/${limit}`)
             }}
           >
-            <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="25">25</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="50">50</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="10">10 latest</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="25">25 latest</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="50">50 latest</DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
