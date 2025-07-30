@@ -6,6 +6,8 @@ import {
 } from "@radix-ui/react-dropdown-menu"
 import { useState } from "react"
 
+import { useRouter } from "next/navigation"
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,6 +20,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { OnesBadge, TwosBadge } from "@/components/ui/custom-badges"
 import {
   Popover,
   PopoverContent,
@@ -26,7 +29,6 @@ import {
 import { FilterType } from "@/types/filter"
 import { CalendarIcon, HashIcon } from "lucide-react"
 import * as React from "react"
-import { OnesBadge, TwosBadge } from "@/components/ui/custom-badges"
 
 type FilterPlaylistProps = {
   show1v1: boolean
@@ -42,7 +44,12 @@ export function FilterPlaylist({
   setShow2v2,
 }: FilterPlaylistProps) {
   const selectedPlaylists = () => {
-    if (show1v1 && show2v2) return <><OnesBadge /> <TwosBadge /></>
+    if (show1v1 && show2v2)
+      return (
+        <>
+          <OnesBadge /> <TwosBadge />
+        </>
+      )
     else if (show1v1) return <OnesBadge />
     else if (show2v2) return <TwosBadge />
     else return "None selected"
@@ -81,19 +88,15 @@ export function FilterPlaylist({
 
 type FilterLimitProps = {
   fetchLimit: number
-  setFetchLimit: React.Dispatch<React.SetStateAction<number>>
-  setFilterDate: React.Dispatch<React.SetStateAction<Date | undefined>>
   filterBy: FilterType
-  setFilterBy: React.Dispatch<React.SetStateAction<FilterType>>
 }
 
 export function FilterLimit({
   fetchLimit,
-  setFetchLimit,
-  setFilterDate,
   filterBy,
-  setFilterBy,
 }: FilterLimitProps) {
+  const router = useRouter()
+
   return (
     <>
       <DropdownMenu>
@@ -118,9 +121,8 @@ export function FilterLimit({
           <DropdownMenuRadioGroup
             value={String(fetchLimit)}
             onValueChange={(val) => {
-              setFetchLimit(Number(val))
-              setFilterDate(undefined)
-              setFilterBy("limit")
+              const limit = Number(val)
+              router.push(`/latest/${limit}`)
             }}
           >
             <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
@@ -134,21 +136,19 @@ export function FilterLimit({
 }
 
 type FilterDateProps = {
-  setFilterDate: React.Dispatch<React.SetStateAction<Date | undefined>>
   validDates: Set<string>
   filterBy: FilterType
-  setFilterBy: React.Dispatch<React.SetStateAction<FilterType>>
+  filterDate: Date | undefined
 }
 
 export function FilterDate({
   validDates,
-  setFilterDate,
   filterBy,
-  setFilterBy,
+  filterDate
 }: FilterDateProps) {
-  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
-  const [date, setDate] = useState<Date>(new Date())
+  const [open, setOpen] = useState(false)
 
   function formatDateToString(date: Date): string {
     return date.toISOString().split("T")[0]
@@ -163,7 +163,7 @@ export function FilterDate({
             variant="ghost"
             className="text-md rounded-l-none rounded-r-xl"
           >
-            {formatDateToString(date)} <CalendarIcon className="size-5" />
+            {filterDate !== undefined ? filterDate.toLocaleDateString() : "Filter by date"} <CalendarIcon className="size-5" />
           </Button>
         ) : (
           <Button
@@ -171,7 +171,7 @@ export function FilterDate({
             variant="ghost"
             className="text-md text-border bg-muted rounded-l-none rounded-r-xl"
           >
-            {formatDateToString(date)} <CalendarIcon className="size-5" />
+            {filterDate !== undefined ? filterDate.toLocaleDateString() : "Filter by date"} <CalendarIcon className="size-5" />
           </Button>
         )}
       </PopoverTrigger>
@@ -183,7 +183,7 @@ export function FilterDate({
       >
         <Calendar
           mode="single"
-          selected={date}
+          selected={filterDate}
           captionLayout="dropdown"
           disabled={(date) => {
             if (!date) return true
@@ -191,10 +191,8 @@ export function FilterDate({
           }}
           onSelect={(date) => {
             if (date) {
-              setFilterDate(date)
-              setDate(date)
-              setOpen(false)
-              setFilterBy("date")
+              const iso = date.toISOString().split("T")[0]
+              router.push(`/date/${iso}`)
             }
           }}
         />

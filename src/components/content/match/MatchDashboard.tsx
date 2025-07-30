@@ -14,6 +14,8 @@ import {
   where,
 } from "firebase/firestore"
 
+import { useRouter } from "next/navigation"
+
 import { Separator } from "@/components/ui/separator"
 import { useEffect, useMemo, useState } from "react"
 import Details from "./details/Details"
@@ -26,21 +28,23 @@ function formatDateToYYYYMMDD(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-export default function Dashboard() {
+export default function Dashboard({
+  fetchLimit = 25,
+  filterDate,
+  filterBy
+}: {
+  fetchLimit?: number
+  filterDate?: Date
+  filterBy: FilterType
+}) {
   const [show1v1, setShow1v1] = useState<boolean>(true)
   const [show2v2, setShow2v2] = useState<boolean>(true)
 
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
 
-  const defaultFetchLimit: number = 25
-  const [fetchLimit, setFetchLimit] = useState<number>(defaultFetchLimit)
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
-  const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
-
   const { games, loading } = useQueryMatches(fetchLimit, filterDate)
-
-  const [FilterBy, setFilterBy] = useState<FilterType>("limit")
 
   useQueryValidDates(setValidDates)
 
@@ -64,17 +68,13 @@ export default function Dashboard() {
             <div className="bg-secondary flex w-fit items-center rounded-xl border-2">
               <FilterLimit
                 fetchLimit={fetchLimit}
-                setFetchLimit={setFetchLimit}
-                setFilterDate={setFilterDate}
-                filterBy={FilterBy}
-                setFilterBy={setFilterBy}
+                filterBy={filterBy}
               />
               <Separator orientation="vertical" className="border-1" />
               <FilterDate
+                filterDate={filterDate}
                 validDates={validDates}
-                setFilterDate={setFilterDate}
-                filterBy={FilterBy}
-                setFilterBy={setFilterBy}
+                filterBy={filterBy}
               />
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function Dashboard() {
             show1v1={show1v1}
             show2v2={show2v2}
             setMatchCount={setMatchCount}
-            filterBy={FilterBy}
+            filterBy={filterBy}
           />
         </div>
       </div>
