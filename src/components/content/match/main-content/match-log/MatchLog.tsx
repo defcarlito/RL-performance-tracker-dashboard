@@ -76,12 +76,6 @@ export function Match({ matchData, filterBy }: matchProps) {
     return localTeamScore > opponentTeamScore
   }
 
-  const mmrDifference = () => {
-    const diff = matchData.LocalMMRAfter - matchData.LocalMMRBefore
-    if (diff === 0) return ""
-    return diff > 0 ? `(+${diff})` : `(-${Math.abs(diff)})`
-  }
-
   const opponents: Array<Player> = players.filter(
     (playerInfo) => playerInfo.Team === opponentTeam,
   )
