@@ -7,7 +7,7 @@ type detailsProps = {
   show1v1: boolean
   show2v2: boolean
 }
-
+``
 export default function Details({
   allMatches,
   show1v1,

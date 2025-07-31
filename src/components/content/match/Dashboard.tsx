@@ -1,5 +1,3 @@
-"use client"
-
 import Log from "./main-content/match-log/MatchLog"
 
 import { db } from "@/firebase/config"
@@ -49,7 +47,7 @@ export default function Dashboard({
   return (
     <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row shadow-[-5px_0_15px_5px_rgba(0,0,0,0.2)]">
       <div className="flex flex-1 flex-col gap-8 px-2">
-        <div className="flex flex-col gap-2 p-8 overflow-scroll">
+        <div className="flex flex-col gap-2 p-2 sm:p-4 overflow-scroll">
           <div className="text-muted-foreground flex justify-end text-sm">
             {matchCount} matches
           </div>

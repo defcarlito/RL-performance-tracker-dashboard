@@ -30,11 +30,17 @@ export default function Log({
   useUpdateMatchCount(setMatchCount, filterMatches)
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       {filterMatches.map((match: Game, index: number) => (
-        <Match matchData={match} key={index} filterBy={filterBy} />
+        <div
+          key={index}
+          style={{ animationDelay: `${index * 25}ms` }}
+          className="motion-preset-fade motion-preset-slide-up-lg"
+        >
+          <Match matchData={match} filterBy={filterBy} />
+        </div>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -85,7 +91,7 @@ export function Match({ matchData, filterBy }: matchProps) {
 
   return (
     <div
-      className={`bg-card border-border flex flex-col border-l-4 rounded-md p-2 ${hasLocalPlayerWon() ? "border-l-green-300" : "border-l-red-300"}`}
+      className={`bg-card border-border flex flex-col rounded-md border-l-4 p-2 ${hasLocalPlayerWon() ? "border-l-green-300" : "border-l-red-300"}`}
     >
       <div className="flex flex-wrap items-center justify-between">
         <div className="flex items-center gap-2">
@@ -103,7 +109,7 @@ export function Match({ matchData, filterBy }: matchProps) {
             : matchData.MatchDate.toLocaleTimeString()}
         </div>
       </div>
-      <div className="align-start text-muted-foreground flex flex-wrap justify-between text-sm relative">
+      <div className="align-start text-muted-foreground relative flex flex-wrap justify-between text-sm">
         <div className="w-full">
           <MatchDetails matchData={matchData} filterBy={filterBy} />
         </div>

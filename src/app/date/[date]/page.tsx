@@ -1,6 +1,6 @@
 "use client"
 
-import Dashboard from "@/components/content/match/MatchDashboard"
+import Dashboard from "@/components/content/match/Dashboard"
 import MatchFilterBar from "@/components/content/match/MatchFilterBar"
 import { redirect } from "next/navigation"
 import { use, useState } from "react"
