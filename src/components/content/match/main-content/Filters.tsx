@@ -96,32 +96,49 @@ export function FilterLimit({ fetchLimit, filterBy }: FilterLimitProps) {
 
   return (
     <div className="flex gap-2">
-
       {fetchLimit === 10 && filterBy === "limit" ? (
-        <Badge asChild className="bg-accent/60 text-foreground border-2 text-lg shadow-md cursor-pointer">
-          <button onClick={() => router.push('/latest/10')}>10</button>
+        <Badge
+          asChild
+          className="bg-accent/60 text-foreground cursor-pointer border-2 text-lg shadow-md"
+        >
+          <button onClick={() => router.push("/latest/10")}>10</button>
         </Badge>
       ) : (
-        <Badge asChild className="bg-transparent border-accent/60 text-accent border-2 text-lg shadow-md cursor-pointer">
-          <button onClick={() => router.push('/latest/10')}>10</button>
+        <Badge
+          asChild
+          className="border-accent/60 text-accent cursor-pointer border-2 bg-transparent text-lg shadow-md"
+        >
+          <button onClick={() => router.push("/latest/10")}>10</button>
         </Badge>
       )}
       {fetchLimit === 25 && filterBy === "limit" ? (
-        <Badge asChild className="bg-accent/60 text-foreground border-2 text-lg shadow-md cursor-pointer">
-          <button onClick={() => router.push('/latest/25')}>25</button>
+        <Badge
+          asChild
+          className="bg-accent/60 text-foreground cursor-pointer border-2 text-lg shadow-md"
+        >
+          <button onClick={() => router.push("/latest/25")}>25</button>
         </Badge>
       ) : (
-        <Badge asChild className="bg-transparent border-accent/60 text-accent border-2 text-lg shadow-md cursor-pointer">
-          <button onClick={() => router.push('/latest/25')}>25</button>
+        <Badge
+          asChild
+          className="border-accent/60 text-accent cursor-pointer border-2 bg-transparent text-lg shadow-md"
+        >
+          <button onClick={() => router.push("/latest/25")}>25</button>
         </Badge>
       )}
       {fetchLimit === 50 && filterBy === "limit" ? (
-        <Badge asChild className="bg-accent/60 text-foreground border-2 text-lg shadow-md cursor-pointer">
-          <button onClick={() => router.push('/latest/50')}>50</button>
+        <Badge
+          asChild
+          className="bg-accent/60 text-foreground cursor-pointer border-2 text-lg shadow-md"
+        >
+          <button onClick={() => router.push("/latest/50")}>50</button>
         </Badge>
       ) : (
-        <Badge asChild className="bg-transparent border-accent/60 text-accent border-2 text-lg shadow-md cursor-pointer">
-          <button onClick={() => router.push('/latest/50')}>50</button>
+        <Badge
+          asChild
+          className="border-accent/60 text-accent cursor-pointer border-2 bg-transparent text-lg shadow-md"
+        >
+          <button onClick={() => router.push("/latest/50")}>50</button>
         </Badge>
       )}
     </div>
@@ -186,27 +203,19 @@ export function FilterDate({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {filterBy === "date" ? (
-          <Button
-            id="date-picker"
-            variant="ghost"
-            className="text-md rounded-l-none rounded-r-xl"
+          <Badge
+            asChild
+            className="bg-accent/60 text-foreground cursor-pointer border-2 text-lg shadow-md"
           >
-            {filterDate !== undefined
-              ? filterDate.toLocaleDateString()
-              : "Filter by date"}{" "}
-            <CalendarIcon className="size-5" />
-          </Button>
+            <button>{filterDate?.toLocaleDateString()}</button>
+          </Badge>
         ) : (
-          <Button
-            id="date-picker"
-            variant="ghost"
-            className="text-md text-border bg-muted rounded-l-none rounded-r-xl"
+          <Badge
+            asChild
+            className="border-accent/60 text-accent cursor-pointer border-2 bg-transparent text-lg shadow-md"
           >
-            {filterDate !== undefined
-              ? filterDate.toLocaleDateString()
-              : "Filter by date"}{" "}
-            <CalendarIcon className="size-5" />
-          </Button>
+            <button>Pick a date</button>
+          </Badge>
         )}
       </PopoverTrigger>
       <PopoverContent

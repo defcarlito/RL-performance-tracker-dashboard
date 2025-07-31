@@ -14,10 +14,8 @@ import {
   where,
 } from "firebase/firestore"
 
-import { Separator } from "@/components/ui/separator"
 import { useEffect, useMemo, useState } from "react"
 import Details from "./details/Details"
-import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 
 function formatDateToYYYYMMDD(date: Date): string {
   const year = date.getFullYear()

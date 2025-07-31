@@ -40,31 +40,47 @@ export default function MatchFilterBar({
   return (
     <>
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">Filters</h1>
-        <div className="flex flex-col gap-2">
+        <h1 className="pl-2 text-2xl font-semibold">
+          Filters
+        </h1>
+        <div className="flex xl:flex-col gap-2">
           <div className="bg-card flex w-fit flex-col gap-4 rounded-md p-4 shadow-md">
             <div className="flex flex-col gap-2">
               {filterBy === "limit" ? (
                 <h1 className="text-foreground flex items-center gap-2 font-medium">
-                  <Gamepad2 className="size-6" /> By latest matches
+                  <div className="bg-accent/75 rounded-lg p-1 shadow-md">
+                    <Gamepad2 className="size-6" />
+                  </div>
+                  By latest matches
                 </h1>
               ) : (
-                <h1 className="text-foreground flex items-center gap-2 font-medium">
-                  <Gamepad2 className="size-6" /> By latest matches
+                <h1 className="text-muted-foreground flex items-center gap-2 font-medium">
+                  <div className="bg-accent/75 rounded-lg p-1 shadow-md">
+                    <Gamepad2 className="size-6" />
+                  </div>
+                  By latest matches
                 </h1>
               )}
               <FilterLimit fetchLimit={fetchLimit} filterBy={filterBy} />
             </div>
-            <Separator className="bg-accent" />
+            <div className="text-accent flex items-center justify-evenly gap-2">
+              <span className="border-accent w-full border-1" />
+              OR
+              <span className="border-accent w-full border-1" />
+            </div>
             <div className="flex flex-col gap-2">
               {filterBy === "date" ? (
                 <h1 className="text-foreground flex items-center gap-2 font-medium">
-                  <Calendar className="size-6" />
+                  <div className="bg-accent/75 rounded-lg p-1 shadow-md">
+                    <Calendar className="size-6" />
+                  </div>
                   By date
                 </h1>
               ) : (
                 <h1 className="text-muted-foreground flex items-center gap-2 font-medium">
-                  <Calendar className="size-6" />
+                  <div className="bg-accent/75 rounded-lg p-1 shadow-md">
+                    <Calendar className="size-6" />
+                  </div>
                   By date
                 </h1>
               )}
@@ -76,8 +92,10 @@ export default function MatchFilterBar({
             </div>
           </div>
           <div className="bg-card flex w-full flex-col gap-2 rounded-md p-4 shadow-md">
-            <h1 className="text-foreground font-medium flex items-center gap-2">
-              <Car className="size-6" />
+            <h1 className="text-foreground flex items-center gap-2 font-medium">
+              <div className="bg-accent/75 rounded-lg p-1 shadow-md">
+                <Car className="size-6" />
+              </div>
               Show playlists
             </h1>
             <div className="flex gap-2">
