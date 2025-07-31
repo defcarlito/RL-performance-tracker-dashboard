@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore"
 
 import { Separator } from "@/components/ui/separator"
+import { Calendar, Car, Gamepad, Gamepad2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 
@@ -38,25 +39,55 @@ export default function MatchFilterBar({
 
   return (
     <>
-      <div className="flex flex-col gap-1">
-        <h1 className="font-medium text-xl">Filters</h1>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold">Filters</h1>
         <div className="flex flex-col gap-2">
-          <div className="bg-secondary flex w-fit items-center rounded-xl border-2">
-            <FilterLimit fetchLimit={fetchLimit} filterBy={filterBy} />
-            <Separator orientation="vertical" className="border-1" />
-            <FilterDate
-              filterDate={filterDate}
-              validDates={validDates}
-              filterBy={filterBy}
-            />
+          <div className="bg-card flex w-fit flex-col gap-4 rounded-md p-4 shadow-md">
+            <div className="flex flex-col gap-2">
+              {filterBy === "limit" ? (
+                <h1 className="text-foreground flex items-center gap-2 font-medium">
+                  <Gamepad2 className="size-6" /> By latest matches
+                </h1>
+              ) : (
+                <h1 className="text-foreground flex items-center gap-2 font-medium">
+                  <Gamepad2 className="size-6" /> By latest matches
+                </h1>
+              )}
+              <FilterLimit fetchLimit={fetchLimit} filterBy={filterBy} />
+            </div>
+            <Separator className="bg-accent" />
+            <div className="flex flex-col gap-2">
+              {filterBy === "date" ? (
+                <h1 className="text-foreground flex items-center gap-2 font-medium">
+                  <Calendar className="size-6" />
+                  By date
+                </h1>
+              ) : (
+                <h1 className="text-muted-foreground flex items-center gap-2 font-medium">
+                  <Calendar className="size-6" />
+                  By date
+                </h1>
+              )}
+              <FilterDate
+                filterDate={filterDate}
+                validDates={validDates}
+                filterBy={filterBy}
+              />
+            </div>
           </div>
-          <div className="bg-secondary flex w-fit items-center rounded-xl border-2 flex-col">
-            <FilterPlaylist
-              show1v1={show1v1}
-              setShow1v1={setShow1v1}
-              show2v2={show2v2}
-              setShow2v2={setShow2v2}
-            />
+          <div className="bg-card flex w-full flex-col gap-2 rounded-md p-4 shadow-md">
+            <h1 className="text-foreground font-medium flex items-center gap-2">
+              <Car className="size-6" />
+              Show playlists
+            </h1>
+            <div className="flex gap-2">
+              <FilterPlaylist
+                show1v1={show1v1}
+                setShow1v1={setShow1v1}
+                show2v2={show2v2}
+                setShow2v2={setShow2v2}
+              />
+            </div>
           </div>
         </div>
       </div>

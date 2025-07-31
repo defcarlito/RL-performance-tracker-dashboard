@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { OnesBadge, TwosBadge } from "@/components/ui/custom-badges"
@@ -57,31 +58,30 @@ export function FilterPlaylist({
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="text-md rounded-xl">
-            Show playlists {">"} {selectedPlaylists()}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuCheckboxItem
-            checked={show1v1}
-            onCheckedChange={() => {
-              setShow1v1((prev) => !prev)
-            }}
-          >
-            1v1
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={show2v2}
-            onCheckedChange={() => {
-              setShow2v2((prev) => !prev)
-            }}
-          >
-            2v2
-          </DropdownMenuCheckboxItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {show1v1 ? (
+        <Badge
+          asChild
+          className="bg-chart-1/60 text-foreground hover:bg-chart-1 cursor-pointer border-2 text-lg"
+        >
+          <button onClick={() => setShow1v1(!show1v1)}>1v1</button>
+        </Badge>
+      ) : (
+        <Badge
+          asChild
+          className="border-chart-1/60 text-chart-1 hover:border-chart-1 cursor-pointer border-2 bg-transparent text-lg"
+        >
+          <button onClick={() => setShow1v1(!show1v1)}>1v1</button>
+        </Badge>
+      )}
+      {show2v2 ? (
+        <Badge className="bg-chart-4/60 text-foreground hover:bg-chart-4 cursor-pointer border-2 text-lg">
+          <button onClick={() => setShow2v2(!show2v2)}>2v2</button>
+        </Badge>
+      ) : (
+        <Badge className="border-chart-4/60 text-chart-4 hover:border-chart-4 cursor-pointer border-2 bg-transparent text-lg">
+          <button onClick={() => setShow2v2(!show2v2)}>2v2</button>
+        </Badge>
+      )}
     </>
   )
 }
@@ -91,48 +91,76 @@ type FilterLimitProps = {
   filterBy: FilterType
 }
 
-export function FilterLimit({
-  fetchLimit,
-  filterBy,
-}: FilterLimitProps) {
+export function FilterLimit({ fetchLimit, filterBy }: FilterLimitProps) {
   const router = useRouter()
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          {filterBy === "limit" ? (
-            <Button
-              variant="ghost"
-              className="text-md rounded-l-xl rounded-r-none"
-            >
-              Showing the last {fetchLimit} matches
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              className="text-md text-border bg-muted rounded-l-xl rounded-r-none"
-            >
-              Filter by latest matches
-            </Button>
-          )}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuRadioGroup
-            value={String(fetchLimit)}
-            onValueChange={(val) => {
-              const limit = Number(val)
-              router.push(`/latest/${limit}`)
-            }}
-          >
-            <DropdownMenuRadioItem value="10">10 latest</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="25">25 latest</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="50">50 latest</DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <div className="flex gap-2">
+
+      {fetchLimit === 10 && filterBy === "limit" ? (
+        <Badge asChild className="bg-accent/60 text-foreground border-2 text-lg shadow-md cursor-pointer">
+          <button onClick={() => router.push('/latest/10')}>10</button>
+        </Badge>
+      ) : (
+        <Badge asChild className="bg-transparent border-accent/60 text-accent border-2 text-lg shadow-md cursor-pointer">
+          <button onClick={() => router.push('/latest/10')}>10</button>
+        </Badge>
+      )}
+      {fetchLimit === 25 && filterBy === "limit" ? (
+        <Badge asChild className="bg-accent/60 text-foreground border-2 text-lg shadow-md cursor-pointer">
+          <button onClick={() => router.push('/latest/25')}>25</button>
+        </Badge>
+      ) : (
+        <Badge asChild className="bg-transparent border-accent/60 text-accent border-2 text-lg shadow-md cursor-pointer">
+          <button onClick={() => router.push('/latest/25')}>25</button>
+        </Badge>
+      )}
+      {fetchLimit === 50 && filterBy === "limit" ? (
+        <Badge asChild className="bg-accent/60 text-foreground border-2 text-lg shadow-md cursor-pointer">
+          <button onClick={() => router.push('/latest/50')}>50</button>
+        </Badge>
+      ) : (
+        <Badge asChild className="bg-transparent border-accent/60 text-accent border-2 text-lg shadow-md cursor-pointer">
+          <button onClick={() => router.push('/latest/50')}>50</button>
+        </Badge>
+      )}
+    </div>
   )
+}
+
+{
+  /* <DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    {filterBy === "limit" ? (
+      <Button
+        variant="ghost"
+        className="text-md rounded-l-xl rounded-r-none"
+      >
+        Showing the last {fetchLimit} matches
+      </Button>
+    ) : (
+      <Button
+        variant="ghost"
+        className="text-md text-border bg-muted rounded-l-xl rounded-r-none"
+      >
+        Filter by latest matches
+      </Button>
+    )}
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuRadioGroup
+      value={String(fetchLimit)}
+      onValueChange={(val) => {
+        const limit = Number(val)
+        router.push(`/latest/${limit}`)
+      }}
+    >
+      <DropdownMenuRadioItem value="10">10 latest</DropdownMenuRadioItem>
+      <DropdownMenuRadioItem value="25">25 latest</DropdownMenuRadioItem>
+      <DropdownMenuRadioItem value="50">50 latest</DropdownMenuRadioItem>
+    </DropdownMenuRadioGroup>
+  </DropdownMenuContent>
+</DropdownMenu> */
 }
 
 type FilterDateProps = {
@@ -144,7 +172,7 @@ type FilterDateProps = {
 export function FilterDate({
   validDates,
   filterBy,
-  filterDate
+  filterDate,
 }: FilterDateProps) {
   const router = useRouter()
 
@@ -163,7 +191,10 @@ export function FilterDate({
             variant="ghost"
             className="text-md rounded-l-none rounded-r-xl"
           >
-            {filterDate !== undefined ? filterDate.toLocaleDateString() : "Filter by date"} <CalendarIcon className="size-5" />
+            {filterDate !== undefined
+              ? filterDate.toLocaleDateString()
+              : "Filter by date"}{" "}
+            <CalendarIcon className="size-5" />
           </Button>
         ) : (
           <Button
@@ -171,7 +202,10 @@ export function FilterDate({
             variant="ghost"
             className="text-md text-border bg-muted rounded-l-none rounded-r-xl"
           >
-            {filterDate !== undefined ? filterDate.toLocaleDateString() : "Filter by date"} <CalendarIcon className="size-5" />
+            {filterDate !== undefined
+              ? filterDate.toLocaleDateString()
+              : "Filter by date"}{" "}
+            <CalendarIcon className="size-5" />
           </Button>
         )}
       </PopoverTrigger>
