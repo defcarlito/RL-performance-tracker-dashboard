@@ -17,15 +17,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { LOCAL_PLAYER_ID } from "@/constants"
+import { FilterType } from "@/types/filter"
 import {
   ArrowDown,
   ArrowUp,
   ChevronDown,
   ChevronRight,
   Minus,
+  Star,
 } from "lucide-react"
 import { useState } from "react"
-import { FilterType } from "@/types/filter"
 
 type matchProps = {
   matchData: Game
@@ -119,7 +120,11 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
                 <TableBody>
                   {sortedByLocalTeam.map((player: Player, index: number) => (
                     <CustomRow player={player} key={index}>
-                      <TableCell>{player.Name}</TableCell>
+                      <TableCell>
+                        {player.EpicAccountId === LOCAL_PLAYER_ID
+                          ? <span className="flex gap-1 items-center"><Star className="size-4" fill="currentColor" />Me</span>
+                          : player.Name}
+                      </TableCell>
                       <TableCell className="text-center">
                         {player.Score}
                       </TableCell>
@@ -149,7 +154,9 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
                 <span>Prev: {matchData.LocalMMRBefore}</span>
               </div>
               <div>
-                {filterBy === "limit" ? matchData.MatchDate.toLocaleTimeString() : matchData.MatchDate.toLocaleDateString()}
+                {filterBy === "limit"
+                  ? matchData.MatchDate.toLocaleTimeString()
+                  : matchData.MatchDate.toLocaleDateString()}
               </div>
             </div>
           </div>
