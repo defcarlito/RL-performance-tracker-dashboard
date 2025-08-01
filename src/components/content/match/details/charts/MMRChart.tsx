@@ -162,6 +162,7 @@ function useFetchTimeFromAllMatches(allMatches: Game[]) {
         MMR: match.LocalMMRAfter,
         time: match.MatchDate.getTime() / 1000,
       }))
+
       return arr.reverse()
     }
 
