@@ -22,7 +22,7 @@ export type Goal = {
 export type Player = {
   OnlineID?: string
   EpicAccountId?: string
-  Platform: string
+  Platform: "epic" | "steam" | "xbox" | "playstation" | "unknown"
   Name: string
   Score: number
   Goals: number

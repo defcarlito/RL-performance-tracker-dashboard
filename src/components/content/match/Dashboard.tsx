@@ -35,7 +35,6 @@ export default function Dashboard({
   show1v1: boolean
   show2v2: boolean
 }) {
-
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
 
   const [matchCount, setMatchCount] = useState(fetchLimit)
@@ -45,19 +44,19 @@ export default function Dashboard({
   useQueryValidDates(setValidDates)
 
   return (
-    <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row shadow-[-5px_0_15px_5px_rgba(0,0,0,0.2)]">
+    <div className="flex h-2/3 w-full flex-col shadow-[-5px_0_15px_5px_rgba(0,0,0,0.2)] xl:h-full xl:flex-2/3 xl:flex-row">
       <div className="flex flex-1 flex-col gap-8 px-2">
-        <div className="flex flex-col gap-2 p-2 sm:p-4 overflow-scroll">
+        <div className="flex flex-col gap-2 overflow-scroll p-2 sm:p-4">
           <div className="text-muted-foreground flex justify-end text-sm">
             {matchCount} matches
           </div>
-            <Log
-              allMatches={games}
-              show1v1={show1v1}
-              show2v2={show2v2}
-              setMatchCount={setMatchCount}
-              filterBy={filterBy}
-            />
+          <Log
+            allMatches={games}
+            show1v1={show1v1}
+            show2v2={show2v2}
+            setMatchCount={setMatchCount}
+            filterBy={filterBy}
+          />
         </div>
       </div>
       <div className="flex-1">
@@ -113,20 +112,29 @@ function mapMatchDocToGame(data: any): Game {
     ScorerTeam: goal.ScorerTeam,
   }))
 
-  const gamePlayers: Array<Player> = data.MatchPlayerInfo.map(
-    (player: any) => ({
-      Name: player.Name,
-      Platform: player.Platform,
-      EpicAccountId: player.EpicAccountId ?? null,
-      OnlineID: player.OnlineID ?? null,
-      Score: player.Score,
-      Goals: player.Goals,
-      Assists: player.Assists,
-      Saves: player.Saves,
-      Shots: player.Shots,
-      Team: player.Team,
-    }),
-  )
+  const gamePlayers: Array<Player> = data.MatchPlayerInfo.map((player: any) => {
+    {
+      let platform = "unknown"
+      if (player.Platform === "OnlinePlatform_Epic") platform = "epic"
+      else if (player.Platform === "OnlinePlatform_Steam") platform = "steam"
+      else if (player.Platform === "OnlinePlatform_Dingo") platform = "xbox"
+      else if (player.Platform === "OnlinePlatform_PS4") platform = "playstation"
+      else if (player.Platform === "OnlinePlatform_PS5") platform = "playstation"
+
+      return {
+        Name: player.Name,
+        Platform: platform,
+        EpicAccountId: player.EpicAccountId ?? null,
+        OnlineID: player.OnlineID ?? null,
+        Score: player.Score,
+        Goals: player.Goals,
+        Assists: player.Assists,
+        Saves: player.Saves,
+        Shots: player.Shots,
+        Team: player.Team,
+      }
+    }
+  })
 
   return {
     FormatVersion: data.FormatVersion,
