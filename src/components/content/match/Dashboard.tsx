@@ -1,5 +1,3 @@
-"use client"
-
 import Log from "./main-content/match-log/MatchLog"
 
 import { db } from "@/firebase/config"
@@ -14,10 +12,8 @@ import {
   where,
 } from "firebase/firestore"
 
-import { Separator } from "@/components/ui/separator"
 import { useEffect, useMemo, useState } from "react"
 import Details from "./details/Details"
-import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 
 function formatDateToYYYYMMDD(date: Date): string {
   const year = date.getFullYear()
@@ -26,70 +22,42 @@ function formatDateToYYYYMMDD(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-export default function Dashboard() {
-  const [show1v1, setShow1v1] = useState<boolean>(true)
-  const [show2v2, setShow2v2] = useState<boolean>(true)
+export default function Dashboard({
+  fetchLimit = 25,
+  filterDate,
+  filterBy,
+  show1v1,
+  show2v2,
+}: {
+  fetchLimit?: number
+  filterDate?: Date
+  filterBy: FilterType
+  show1v1: boolean
+  show2v2: boolean
+}) {
 
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
 
-  const defaultFetchLimit: number = 25
-  const [fetchLimit, setFetchLimit] = useState<number>(defaultFetchLimit)
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
-  const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
-
   const { games, loading } = useQueryMatches(fetchLimit, filterDate)
-
-  const [FilterBy, setFilterBy] = useState<FilterType>("limit")
 
   useQueryValidDates(setValidDates)
 
   return (
-    <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row">
-      <div className="flex flex-1 flex-col gap-8 overflow-scroll px-2">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1">
-            <h1>Show Matches</h1>
-            <div className="bg-secondary w-fit rounded-xl border-2">
-              <FilterPlaylist
-                show1v1={show1v1}
-                setShow1v1={setShow1v1}
-                show2v2={show2v2}
-                setShow2v2={setShow2v2}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <h1>Show last matches OR filter by date</h1>
-            <div className="bg-secondary flex w-fit items-center rounded-xl border-2">
-              <FilterLimit
-                fetchLimit={fetchLimit}
-                setFetchLimit={setFetchLimit}
-                setFilterDate={setFilterDate}
-                filterBy={FilterBy}
-                setFilterBy={setFilterBy}
-              />
-              <Separator orientation="vertical" className="border-1" />
-              <FilterDate
-                validDates={validDates}
-                setFilterDate={setFilterDate}
-                filterBy={FilterBy}
-                setFilterBy={setFilterBy}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
+    <div className="flex h-2/3 w-full flex-col xl:h-full xl:flex-2/3 xl:flex-row shadow-[-5px_0_15px_5px_rgba(0,0,0,0.2)]">
+      <div className="flex flex-1 flex-col gap-8 px-2">
+        <div className="flex flex-col gap-2 p-2 sm:p-4 overflow-scroll">
           <div className="text-muted-foreground flex justify-end text-sm">
-            <div>{matchCount} matches</div>
+            {matchCount} matches
           </div>
-          <Log
-            allMatches={games}
-            show1v1={show1v1}
-            show2v2={show2v2}
-            setMatchCount={setMatchCount}
-            filterBy={FilterBy}
-          />
+            <Log
+              allMatches={games}
+              show1v1={show1v1}
+              show2v2={show2v2}
+              setMatchCount={setMatchCount}
+              filterBy={filterBy}
+            />
         </div>
       </div>
       <div className="flex-1">

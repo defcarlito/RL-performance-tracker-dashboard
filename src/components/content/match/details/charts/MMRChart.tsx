@@ -71,13 +71,15 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
     if (net > 0) {
       return (
         <>
-          Netting a {net} increase in MMR <TrendingUp className="h-4 w-4 text-green-300" />
+          Netting a {net} increase in MMR{" "}
+          <TrendingUp className="h-4 w-4 text-green-300" />
         </>
       )
     } else if (net < 0) {
       return (
         <>
-          Netting a {Math.abs(net)} decrease in MMR <TrendingDown className="h-4 w-4 text-red-300" />
+          Netting a {Math.abs(net)} decrease in MMR{" "}
+          <TrendingDown className="h-4 w-4 text-red-300" />
         </>
       )
     } else {
@@ -87,7 +89,7 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
 
   return (
     <>
-      <Card className="h-full">
+      <Card className="h-full shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">
             {playlist === ONES_PLAYLIST ? (
@@ -160,6 +162,7 @@ function useFetchTimeFromAllMatches(allMatches: Game[]) {
         MMR: match.LocalMMRAfter,
         time: match.MatchDate.getTime() / 1000,
       }))
+
       return arr.reverse()
     }
 
