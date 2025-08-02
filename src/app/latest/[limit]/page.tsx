@@ -1,7 +1,6 @@
 "use client"
 
 import Dashboard from "@/components/content/match/Dashboard"
-import { FilterPlaylist } from "@/components/content/match/main-content/Filters"
 import MatchFilterBar from "@/components/content/match/MatchFilterBar"
 import { redirect } from "next/navigation"
 import { use, useState } from "react"
@@ -24,7 +23,7 @@ export default function LatestMatchesPage({
 
   return (
     <div className="0 flex h-screen flex-wrap">
-      <div className="bg-sidebar flex h-1/3 w-full flex-col items-center justify-center gap-4 xl:h-full xl:flex-1/3">
+      <div className="bg-sidebar flex h-1/3 w-full flex-col items-center gap-4 xl:h-full xl:flex-1/3 xl:py-8 py-4">
         <div>
           <MatchFilterBar
             filterBy="limit"
