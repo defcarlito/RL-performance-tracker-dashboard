@@ -74,11 +74,17 @@ export function FilterPlaylist({
         </Badge>
       )}
       {show2v2 ? (
-        <Badge className="bg-chart-4/60 text-foreground hover:bg-chart-4 cursor-pointer border-2 text-lg">
+        <Badge
+          asChild
+          className="bg-chart-4/60 text-foreground hover:bg-chart-4 cursor-pointer border-2 text-lg"
+        >
           <button onClick={() => setShow2v2(!show2v2)}>2v2</button>
         </Badge>
       ) : (
-        <Badge className="border-chart-4/60 text-chart-4 hover:border-chart-4 cursor-pointer border-2 bg-transparent text-lg">
+        <Badge
+          asChild
+          className="border-chart-4/60 text-chart-4 hover:border-chart-4 cursor-pointer border-2 bg-transparent text-lg"
+        >
           <button onClick={() => setShow2v2(!show2v2)}>2v2</button>
         </Badge>
       )}
