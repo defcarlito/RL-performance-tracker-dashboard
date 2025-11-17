@@ -67,9 +67,106 @@ export default function Dashboard({
 }
 
 function useQueryValidDates(setValidDates: any): void {
-  
+  useEffect(() => {
+    const fetchAvaliableDates = async () => {
+      const snapshot = await getDocs(collection(db, "match_dates"))
+      const fetchedDates = new Set<string>(snapshot.docs.map((doc) => doc.id))
+      setValidDates(fetchedDates)
+    }
+    fetchAvaliableDates()
+  }, [])
 }
 
-function useQueryMatches(fetchLimit, filterDate){
-  
+function useQueryMatches(
+  fetchLimit: number,
+  filterDate?: Date,
+): {
+  games: Array<Game>
+  loading: boolean
+} {
+  const matchQuery = useMemo(() => {
+    if (filterDate) {
+      return query(
+        collection(db, "matches"),
+        where("StartDate", "==", formatDateToYYYYMMDD(filterDate)),
+        orderBy("StartEpoch", "desc"),
+      )
+    } else {
+      return query(
+        collection(db, "matches"),
+        where("FormatVersion", "==", "8.0"),
+        orderBy("StartEpoch", "desc"),
+        limit(fetchLimit),
+      )
+    }
+  }, [fetchLimit, filterDate])
+
+  return useMatchesFromQuery(matchQuery)
+}
+
+function mapMatchDocToGame(data: any): Game {
+  const gameGoals: Array<Goal> = data.Goals.map((goal: any) => ({
+    GoalClip: goal.GoalClip ?? null,
+    GoalTimeSeconds: goal.GoalTimeSeconds,
+    ScorerName: goal.ScorerName ?? null,
+    ScorerTeam: goal.ScorerTeam,
+  }))
+
+  const gamePlayers: Array<Player> = data.MatchPlayerInfo.map((player: any) => {
+    {
+      let platform = "unknown"
+      if (player.Platform === "OnlinePlatform_Epic") platform = "epic"
+      else if (player.Platform === "OnlinePlatform_Steam") platform = "steam"
+      else if (player.Platform === "OnlinePlatform_Dingo") platform = "xbox"
+      else if (player.Platform === "OnlinePlatform_PS4") platform = "playstation"
+      else if (player.Platform === "OnlinePlatform_PS5") platform = "playstation"
+
+      return {
+        Name: player.Name,
+        Platform: platform,
+        EpicAccountId: player.EpicAccountId ?? null,
+        OnlineID: player.OnlineID ?? null,
+        Score: player.Score,
+        Goals: player.Goals,
+        Assists: player.Assists,
+        Saves: player.Saves,
+        Shots: player.Shots,
+        Team: player.Team,
+      }
+    }
+  })
+
+  return {
+    FormatVersion: data.FormatVersion,
+    Goals: gameGoals,
+    LocalMMRAfter: data.LocalMMRAfter,
+    LocalMMRBefore: data.LocalMMRBefore,
+    MatchPlayerInfo: gamePlayers,
+    Playlist: data.Playlist,
+    MatchDate: new Date(data.StartEpoch * 1000),
+    Team0Score: data.Team0Score,
+    Team1Score: data.Team1Score,
+    bForfeit: data.bForfeit,
+    hasClips: data.hasClips ?? false,
+  }
+}
+
+function useMatchesFromQuery(matchQuery: any): {
+  games: Array<Game>
+  loading: boolean
+} {
+  const [loading, setLoading] = useState(true)
+  const [games, setGames] = useState<Game[]>([])
+
+  useEffect(() => {
+    getDocs(matchQuery).then((snapshot) => {
+      const allGameData = snapshot.docs.map((doc) =>
+        mapMatchDocToGame(doc.data()),
+      )
+      setGames(allGameData)
+      setLoading(false)
+    })
+  }, [matchQuery])
+
+  return { games, loading }
 }
