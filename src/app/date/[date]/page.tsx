@@ -14,6 +14,7 @@ export default function DatePage({
   const { date } = use(params)
   const dateParam = date
 
+  // check YYYY-MM-DD format
   const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(dateParam)
   if (!isValidDate) {
     redirect("/latest/25")
@@ -30,7 +31,7 @@ export default function DatePage({
 
   return (
     <div className="0 flex h-screen flex-wrap">
-      <div className="bg-sidebar flex h-1/3 w-full flex-row items-center justify-center gap-12 xl:h-full xl:flex-1/3 xl:py-8 py-4 xl:flex-col">
+      <div className="bg-sidebar flex h-1/3 w-full flex-row items-center justify-center gap-12 py-4 xl:h-full xl:flex-1/3 xl:flex-col xl:py-8">
         <div>
           <MatchFilterBar
             filterBy="date"
@@ -42,7 +43,6 @@ export default function DatePage({
             setShow2v2={setShow2v2}
           />
         </div>
-        <RecentGoals />
       </div>
       <Dashboard
         filterDate={parsedDate}

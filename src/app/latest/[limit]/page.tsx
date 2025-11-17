@@ -2,6 +2,7 @@
 
 import Dashboard from "@/components/content/match/Dashboard"
 import MatchFilterBar from "@/components/content/match/MatchFilterBar"
+import RecentGoals from "@/components/content/match/RecentGoals"
 import { redirect } from "next/navigation"
 import { use, useState } from "react"
 
@@ -23,7 +24,7 @@ export default function LatestMatchesPage({
 
   return (
     <div className="0 flex h-screen flex-wrap">
-      <div className="bg-sidebar flex h-1/3 w-full flex-col items-center gap-4 xl:h-full xl:flex-1/3 xl:py-8 py-4">
+      <div className="bg-sidebar flex h-1/3 w-full flex-row items-center justify-center gap-12 xl:h-full xl:flex-1/3 xl:py-8 py-4 xl:flex-col">
         <div>
           <MatchFilterBar
             filterBy="limit"

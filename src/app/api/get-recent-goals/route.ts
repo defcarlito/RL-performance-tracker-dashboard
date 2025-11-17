@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 
 const NUM_RECENT_GAMES = 3
+const BB_URL = "s3.us-east-005.backblazeb2.com"
 
 export async function GET(request: NextRequest) {
   const B2 = require("backblaze-b2")
@@ -12,19 +13,18 @@ export async function GET(request: NextRequest) {
   try {
     await b2.authorize()
 
-    const GOAL_CLIPS_ID = "a01fe501f3c596e69c790d17"
-    const response = await b2.listFileNames({
-      bucketId: GOAL_CLIPS_ID,
-      maxFileCount: 10,
-      delimiter: "",
-      prefix: ""
+    const allFiles = await b2.listFileNames({
+      bucketId: process.env.BLAZEBACK_GOAL_CLIPS_ID,
+      maxFileCount: NUM_RECENT_GAMES,
     })
 
-    console.log(response.data.files)
+    const files = allFiles.data.files
+    const urls = files.map((file: Array<string>) => `${BB_URL}/${file.fileName}`)
+
+    return NextResponse.json(urls, { status: 200 })
   } catch (error: any) {
-    console.log(`${error}`)
+    console.log(error)
   }
 
-  const data = "Successfully connected"
-  return NextResponse.json(data, { status: 200 })
+  return NextResponse.json("Error", { status: 400 })
 }
