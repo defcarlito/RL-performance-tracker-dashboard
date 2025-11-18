@@ -7,13 +7,6 @@ import Details from "./details/Details"
 
 import { supabase } from "../../../../supabase/supabase"
 
-function formatDateToYYYYMMDD(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
-}
-
 export default function Dashboard({
   fetchLimit = 25,
   filterDate,
@@ -72,14 +65,13 @@ export default function Dashboard({
             new Date(time.startEpoch * 1000).toISOString().slice(0, 10),
           )
         })
-        console.log(allTimes)
-        // set valid dates
         setValidDates(allTimes)
       }
       load()
     }, [])
   }
-
+  
+  // TODO: account for fetch limit and filter date
   function useGetMatchesFromSupabase() {
     const [games, setGames] = useState<Game[]>([])
 
@@ -91,8 +83,6 @@ export default function Dashboard({
         goals (*)
           `)
 
-        console.log("Supabase games:")
-        console.log(games)
         if (error) {
           console.log("Error: ", error)
           return
@@ -137,7 +127,6 @@ export default function Dashboard({
             players: allPlayers,
             goals: allGoals,
           }
-          console.log(currentGame)
           return currentGame
         })
         setGames(allGames)

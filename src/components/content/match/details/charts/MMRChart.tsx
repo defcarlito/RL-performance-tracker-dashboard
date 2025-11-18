@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/chart"
 import { ONES_PLAYLIST } from "@/constants"
 import { Game } from "@/types/match"
-import { match } from "assert"
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Area, AreaChart, ReferenceLine, XAxis, YAxis } from "recharts"
@@ -49,7 +48,7 @@ export default function MMRChart({ allMatches, playlist }: mmrChartProps) {
 
   const dateCount = () => {
     const uniqueDates = new Set(
-      allMatches.map((match) => match.MatchDate.toDateString()),
+      allMatches.map((match) => match.date.toDateString()),
     )
     return uniqueDates.size
   }
@@ -159,8 +158,8 @@ function useFetchTimeFromAllMatches(allMatches: Game[]) {
   useEffect(() => {
     const data = () => {
       const arr = allMatches.map((match) => ({
-        MMR: match.LocalMMRAfter,
-        time: match.MatchDate.getTime() / 1000,
+        MMR: match.mmrAfter,
+        time: match.date.getTime() / 1000,
       }))
 
       return arr.reverse()

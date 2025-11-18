@@ -67,8 +67,20 @@ export function Match({ matchData, filterBy }: matchProps) {
   const localTeam: number = localPlayer?.team
   const opponentTeam: number = localTeam === 0 ? 1 : 0
 
-  const localTeamScore = 1 // temp
-  const opponentTeamScore = 2 // temp
+  function getTeamScores() {
+    let localScore = 0
+    let oppScore = 0
+    players.forEach((p) => {
+      if (p.team == localTeam) {
+        localScore += p.goals
+      } else {
+        oppScore += p.goals
+      }
+    })
+    return [localScore, oppScore]
+  }
+  
+  const [localTeamScore, opponentTeamScore] = getTeamScores()
   const score: string = `${localTeamScore} - ${opponentTeamScore}`
 
   const hasLocalPlayerWon = (): boolean => {

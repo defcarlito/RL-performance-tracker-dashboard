@@ -7,7 +7,7 @@ type detailsProps = {
   show1v1: boolean
   show2v2: boolean
 }
-``
+
 export default function Details({
   allMatches,
   show1v1,
@@ -15,10 +15,10 @@ export default function Details({
 }: detailsProps) {
   
   const onesMatchesOnly = allMatches.filter(
-    (game) => game.Playlist === ONES_PLAYLIST,
+    (game) => game.playlist === ONES_PLAYLIST,
   )
   const twosMatchesOnly = allMatches.filter(
-    (game) => game.Playlist === TWOS_PLAYLIST,
+    (game) => game.playlist === TWOS_PLAYLIST,
   )
 
   return (
