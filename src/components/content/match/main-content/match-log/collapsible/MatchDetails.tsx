@@ -5,12 +5,10 @@ import {
 } from "@/components/ui/collapsible"
 import { Game, Player } from "@/types/match"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -34,13 +32,13 @@ type matchProps = {
 }
 
 export default function MatchDetails({ matchData, filterBy }: matchProps) {
-  const playerInfo: Player[] = matchData.MatchPlayerInfo
+  const playerInfo: Player[] = matchData.players
 
   const sortedByLocalTeam = [...playerInfo].sort((a, b) => {
-    if (a.Team !== b.Team) {
-      return a.Team - b.Team
+    if (a.team !== b.team) {
+      return a.team - b.team
     }
-    return b.Score - a.Score
+    return b.score - a.score
   })
 
   const CustomRow = ({
@@ -53,11 +51,11 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
     return (
       <TableRow
         className={
-          player.EpicAccountId === LOCAL_PLAYER_ID
-            ? player.Team === 0
+          player.uid === LOCAL_PLAYER_ID
+            ? player.team === 0
               ? "bg-blue-300/50"
               : "bg-orange-300/50"
-            : player.Team === 0
+            : player.team === 0
               ? "bg-blue-300/25"
               : "bg-orange-300/25"
         }
@@ -68,14 +66,14 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
   }
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  let collapseIcon = isOpen ? (
+  const collapseIcon = isOpen ? (
     <ChevronDown className="size-4" />
   ) : (
     <ChevronRight className="size-4" />
   )
 
   const mmrDifference = () => {
-    const diff = matchData.LocalMMRAfter - matchData.LocalMMRBefore
+    const diff = matchData.mmrAfter - matchData.mmrBefore
     if (diff === 0)
       return (
         <div className="text-foreground flex items-center">
@@ -121,24 +119,24 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
                   {sortedByLocalTeam.map((player: Player, index: number) => (
                     <CustomRow player={player} key={index}>
                       <TableCell>
-                        {player.EpicAccountId === LOCAL_PLAYER_ID
+                        {player.uid === LOCAL_PLAYER_ID
                           ? <span className="flex gap-1 items-center"><Star className="size-4" fill="currentColor" />Me</span>
-                          : player.Name}
+                          : player.name}
                       </TableCell>
                       <TableCell className="text-center">
-                        {player.Score}
+                        {player.score}
                       </TableCell>
                       <TableCell className="text-center">
-                        {player.Goals}
+                        {player.goals}
                       </TableCell>
                       <TableCell className="text-center">
-                        {player.Assists}
+                        {player.assists}
                       </TableCell>
                       <TableCell className="text-center">
-                        {player.Saves}
+                        {player.saves}
                       </TableCell>
                       <TableCell className="text-center">
-                        {player.Shots}
+                        {player.shots}
                       </TableCell>
                     </CustomRow>
                   ))}
@@ -148,15 +146,15 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
             <div className="flex justify-between">
               <div className="flex gap-4">
                 <span className="flex gap-1">
-                  MMR: {matchData.LocalMMRAfter}
+                  MMR: {matchData.mmrAfter}
                   <span>{mmrDifference()}</span>
                 </span>
-                <span>Prev: {matchData.LocalMMRBefore}</span>
+                <span>Prev: {matchData.mmrBefore}</span>
               </div>
               <div>
                 {filterBy === "limit"
-                  ? matchData.MatchDate.toLocaleTimeString()
-                  : matchData.MatchDate.toLocaleDateString()}
+                  ? matchData.date.toLocaleTimeString()
+                  : matchData.date.toLocaleDateString()}
               </div>
             </div>
           </div>

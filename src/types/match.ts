@@ -1,33 +1,30 @@
 export type Game = {
-  FormatVersion: string
-  Goals: Array<Goal>
-  LocalMMRAfter: number
-  LocalMMRBefore: number
-  MatchPlayerInfo: Array<Player>
-  Playlist: 10 | 11 // 10 = ranked 1v1, 11 = ranked 2v2
-  MatchDate: Date
-  Team0Score: number
-  Team1Score: number
-  bForfeit: boolean
-  hasClips?: boolean
-}
-
-export type Goal = {
-  GoalClip?: string
-  GoalTimeSeconds: number
-  ScorerName?: string
-  ScorerTeam: 0 | 1 // 0 = blue, 1 = orange
+  startEpoch: number,
+  date: Date,
+  playlist: 10 | 11 | 13,
+  mmrBefore: number,
+  mmrAfter: number,
+  endedOnForfeit: boolean,
+  players: Array<Player>,
+  goals: Array<Goal>
 }
 
 export type Player = {
-  OnlineID?: string
-  EpicAccountId?: string
-  Platform: "epic" | "steam" | "xbox" | "playstation" | "unknown"
-  Name: string
-  Score: number
-  Goals: number
-  Assists: number
-  Shots: number
-  Saves: number
-  Team: 0 | 1 // 0 = blue, 1 = orange
+  id: number,
+  uid: string,
+  platform: number,
+  team: number,
+  name: string,
+  isLocal: boolean,
+  score: number,
+  goals: number,
+  assists: number
+  shots: number,
+  saves: number
+}
+
+export type Goal = {
+  id: number,
+  uid: string,
+  time: number,
 }

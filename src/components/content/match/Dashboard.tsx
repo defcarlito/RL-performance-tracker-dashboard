@@ -1,19 +1,11 @@
 import Log from "./main-content/match-log/MatchLog"
 
-import { db } from "@/firebase/config"
 import { FilterType } from "@/types/filter"
 import { Game, Goal, Player } from "@/types/match"
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore"
-
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import Details from "./details/Details"
+
+import { supabase } from "../../../../supabase/supabase"
 
 function formatDateToYYYYMMDD(date: Date): string {
   const year = date.getFullYear()
@@ -39,9 +31,10 @@ export default function Dashboard({
 
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
-  const { games, loading } = useQueryMatches(fetchLimit, filterDate)
+  const games = useGetMatchesFromSupabase()
 
-  useQueryValidDates(setValidDates)
+  useGetDatesFromSupabase(setValidDates)
+  useGetMatchesFromSupabase()
 
   return (
     <div className="flex h-2/3 w-full flex-col shadow-[-5px_0_15px_5px_rgba(0,0,0,0.2)] xl:h-full xl:flex-2/3 xl:flex-row">
@@ -64,109 +57,94 @@ export default function Dashboard({
       </div>
     </div>
   )
-}
 
-function useQueryValidDates(setValidDates: any): void {
-  useEffect(() => {
-    const fetchAvaliableDates = async () => {
-      const snapshot = await getDocs(collection(db, "match_dates"))
-      const fetchedDates = new Set<string>(snapshot.docs.map((doc) => doc.id))
-      setValidDates(fetchedDates)
-    }
-    fetchAvaliableDates()
-  }, [])
-}
+  function useGetDatesFromSupabase(setValidDates) {
+    useEffect(() => {
+      async function load() {
+        const { data: times, error } = await supabase
+          .from("matches")
+          .select("startEpoch")
 
-function useQueryMatches(
-  fetchLimit: number,
-  filterDate?: Date,
-): {
-  games: Array<Game>
-  loading: boolean
-} {
-  const matchQuery = useMemo(() => {
-    if (filterDate) {
-      return query(
-        collection(db, "matches"),
-        where("StartDate", "==", formatDateToYYYYMMDD(filterDate)),
-        orderBy("StartEpoch", "desc"),
-      )
-    } else {
-      return query(
-        collection(db, "matches"),
-        where("FormatVersion", "==", "8.0"),
-        orderBy("StartEpoch", "desc"),
-        limit(fetchLimit),
-      )
-    }
-  }, [fetchLimit, filterDate])
+        const allTimes = new Set<string>()
 
-  return useMatchesFromQuery(matchQuery)
-}
-
-function mapMatchDocToGame(data: any): Game {
-  const gameGoals: Array<Goal> = data.Goals.map((goal: any) => ({
-    GoalClip: goal.GoalClip ?? null,
-    GoalTimeSeconds: goal.GoalTimeSeconds,
-    ScorerName: goal.ScorerName ?? null,
-    ScorerTeam: goal.ScorerTeam,
-  }))
-
-  const gamePlayers: Array<Player> = data.MatchPlayerInfo.map((player: any) => {
-    {
-      let platform = "unknown"
-      if (player.Platform === "OnlinePlatform_Epic") platform = "epic"
-      else if (player.Platform === "OnlinePlatform_Steam") platform = "steam"
-      else if (player.Platform === "OnlinePlatform_Dingo") platform = "xbox"
-      else if (player.Platform === "OnlinePlatform_PS4") platform = "playstation"
-      else if (player.Platform === "OnlinePlatform_PS5") platform = "playstation"
-
-      return {
-        Name: player.Name,
-        Platform: platform,
-        EpicAccountId: player.EpicAccountId ?? null,
-        OnlineID: player.OnlineID ?? null,
-        Score: player.Score,
-        Goals: player.Goals,
-        Assists: player.Assists,
-        Saves: player.Saves,
-        Shots: player.Shots,
-        Team: player.Team,
+        times?.forEach((time) => {
+          allTimes.add(
+            new Date(time.startEpoch * 1000).toISOString().slice(0, 10),
+          )
+        })
+        console.log(allTimes)
+        // set valid dates
+        setValidDates(allTimes)
       }
-    }
-  })
-
-  return {
-    FormatVersion: data.FormatVersion,
-    Goals: gameGoals,
-    LocalMMRAfter: data.LocalMMRAfter,
-    LocalMMRBefore: data.LocalMMRBefore,
-    MatchPlayerInfo: gamePlayers,
-    Playlist: data.Playlist,
-    MatchDate: new Date(data.StartEpoch * 1000),
-    Team0Score: data.Team0Score,
-    Team1Score: data.Team1Score,
-    bForfeit: data.bForfeit,
-    hasClips: data.hasClips ?? false,
+      load()
+    }, [])
   }
-}
 
-function useMatchesFromQuery(matchQuery: any): {
-  games: Array<Game>
-  loading: boolean
-} {
-  const [loading, setLoading] = useState(true)
-  const [games, setGames] = useState<Game[]>([])
+  function useGetMatchesFromSupabase() {
+    const [games, setGames] = useState<Game[]>([])
 
-  useEffect(() => {
-    getDocs(matchQuery).then((snapshot) => {
-      const allGameData = snapshot.docs.map((doc) =>
-        mapMatchDocToGame(doc.data()),
-      )
-      setGames(allGameData)
-      setLoading(false)
-    })
-  }, [matchQuery])
+    useEffect(() => {
+      async function load() {
+        const { data: games, error } = await supabase.from("matches").select(`
+         *,
+        players (*),
+        goals (*)
+          `)
 
-  return { games, loading }
+        console.log("Supabase games:")
+        console.log(games)
+        if (error) {
+          console.log("Error: ", error)
+          return
+        }
+
+        if (!games) return
+
+        const allGames: Array<Game> = games?.map((match) => {
+          const allPlayers: Array<Player> = match.players.map((player) => {
+            const currentPlayer: Player = {
+              id: player.id,
+              uid: player.uid,
+              platform: player.platform,
+              team: player.team,
+              name: player.name,
+              isLocal: player.isLocal,
+              score: player.score,
+              goals: player.goals,
+              assists: player.assists,
+              shots: player.shots,
+              saves: player.saves,
+            }
+            return currentPlayer
+          })
+
+          const allGoals: Array<Goal> = match.goals.map((goal) => {
+            const currentGoal: Goal = {
+              id: goal.id,
+              uid: goal.uid,
+              time: goal.time,
+            }
+            return currentGoal
+          })
+
+          const currentGame: Game = {
+            startEpoch: match.startEpoch,
+            date: new Date(match.startEpoch * 1000),
+            playlist: match.playlist,
+            mmrBefore: match.mmrBefore,
+            mmrAfter: match.mmrAfter,
+            endedOnForfeit: match.endedOnForfeit,
+            players: allPlayers,
+            goals: allGoals,
+          }
+          console.log(currentGame)
+          return currentGame
+        })
+        setGames(allGames)
+      }
+      // return all games
+      load()
+    }, [])
+    return games
+  }
 }

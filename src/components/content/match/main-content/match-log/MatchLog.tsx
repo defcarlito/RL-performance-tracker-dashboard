@@ -22,8 +22,8 @@ export default function Log({
 }: logProps) {
   const filterMatches = allMatches.filter((match) => {
     return (
-      (show1v1 && match.Playlist === ONES_PLAYLIST) ||
-      (show2v2 && match.Playlist === TWOS_PLAYLIST)
+      (show1v1 && match.playlist === ONES_PLAYLIST) ||
+      (show2v2 && match.playlist === TWOS_PLAYLIST)
     )
   })
 
@@ -59,34 +59,32 @@ type matchProps = {
 }
 
 export function Match({ matchData, filterBy }: matchProps) {
-  const players: Array<Player> = matchData.MatchPlayerInfo
+  const players: Array<Player> = matchData.players
   const localPlayer: Player = players.find(
-    (playerInfo) => playerInfo.EpicAccountId === LOCAL_PLAYER_ID,
+    (playerInfo) => playerInfo.uid === LOCAL_PLAYER_ID,
   )!
 
-  const localTeam: number = localPlayer?.Team
+  const localTeam: number = localPlayer?.team
   const opponentTeam: number = localTeam === 0 ? 1 : 0
 
-  const localTeamScore =
-    localTeam === 0 ? matchData.Team0Score : matchData.Team1Score
-  const opponentTeamScore =
-    localTeam === 0 ? matchData.Team1Score : matchData.Team0Score
+  const localTeamScore = 1 // temp
+  const opponentTeamScore = 2 // temp
   const score: string = `${localTeamScore} - ${opponentTeamScore}`
 
   const hasLocalPlayerWon = (): boolean => {
-    if (matchData.LocalMMRAfter > matchData.LocalMMRBefore) {
+    if (matchData.mmrAfter > matchData.mmrBefore) {
       return true
-    } else if (matchData.LocalMMRAfter < matchData.LocalMMRBefore) {
+    } else if (matchData.mmrAfter< matchData.mmrBefore) {
       return false
     }
     return localTeamScore > opponentTeamScore
   }
 
   const opponents: Array<Player> = players.filter(
-    (playerInfo) => playerInfo.Team === opponentTeam,
+    (playerInfo) => playerInfo.team === opponentTeam,
   )
   const opponentNames: string = opponents
-    .map((player) => player.Name)
+    .map((player) => player.name)
     .join(", ")
 
   return (
@@ -105,8 +103,8 @@ export function Match({ matchData, filterBy }: matchProps) {
         <div className="text-sm">vs. {opponentNames}</div>
         <div className="text-muted-foreground">
           {filterBy === "limit"
-            ? matchData.MatchDate.toLocaleDateString()
-            : matchData.MatchDate.toLocaleTimeString()}
+            ? matchData.date.toLocaleDateString()
+            : matchData.date.toLocaleTimeString()}
         </div>
       </div>
       <div className="align-start text-muted-foreground relative flex flex-wrap justify-between text-sm">
@@ -114,7 +112,7 @@ export function Match({ matchData, filterBy }: matchProps) {
           <MatchDetails matchData={matchData} filterBy={filterBy} />
         </div>
         <div className="absolute top-0 right-0">
-          {matchData.Playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}
+          {matchData.playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}
         </div>
       </div>
     </div>
