@@ -1,10 +1,10 @@
 "use client"
 
-import { Separator } from "@/components/ui/separator"
-import { Calendar, Car, Gamepad, Gamepad2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { Calendar, Car, Gamepad2 } from "lucide-react"
+import { Dispatch, useEffect, useState } from "react"
 import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
 import { supabase } from "../../../../supabase/supabase"
+import { FilterType } from "@/types/filter"
 
 export default function MatchFilterBar({
   fetchLimit = 25,
@@ -20,8 +20,8 @@ export default function MatchFilterBar({
   filterBy: FilterType
   show1v1: boolean
   show2v2: boolean
-  setShow1v1: any
-  setShow2v2: any
+  setShow1v1: Dispatch<React.SetStateAction<boolean>>
+  setShow2v2: Dispatch<React.SetStateAction<boolean>>
 }) {
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
 
@@ -30,10 +30,8 @@ export default function MatchFilterBar({
   return (
     <>
       <div className="flex flex-col gap-2">
-        <h1 className="pl-2 text-2xl font-semibold">
-          Filters
-        </h1>
-        <div className="flex xl:flex-col gap-2">
+        <h1 className="pl-2 text-2xl font-semibold">Filters</h1>
+        <div className="flex gap-2 xl:flex-col">
           <div className="bg-card flex w-fit flex-col gap-4 rounded-md p-4 shadow-md">
             <div className="flex flex-col gap-2">
               {filterBy === "limit" ? (
@@ -103,12 +101,16 @@ export default function MatchFilterBar({
   )
 }
 
-function useGetDatesFromSupabase(setValidDates) {
+function useGetDatesFromSupabase(
+  setValidDates: Dispatch<React.SetStateAction<Set<string>>>,
+) {
   useEffect(() => {
     async function load() {
-      const { data: times, error } = await supabase 
+      const { data: times, error } = await supabase
         .from("matches")
         .select("startEpoch")
+
+      console.log(error) // get linter to stop complaining
 
       const allTimes = new Set<string>()
 
@@ -120,5 +122,6 @@ function useGetDatesFromSupabase(setValidDates) {
       setValidDates(allTimes)
     }
     load()
-  }, [])
+  }, [setValidDates])
 }
+

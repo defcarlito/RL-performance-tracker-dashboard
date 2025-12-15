@@ -2,10 +2,8 @@
 
 import Dashboard from "@/components/content/match/Dashboard"
 import MatchFilterBar from "@/components/content/match/MatchFilterBar"
-import RecentGoals from "@/components/content/match/RecentGoals"
 import { redirect } from "next/navigation"
-import { use, useEffect, useState } from "react"
-import { supabase } from "../../../../supabase/supabase"
+import { use, useState } from "react"
 
 export default function LatestMatchesPage({
   params,
@@ -22,10 +20,10 @@ export default function LatestMatchesPage({
 
   const [show1v1, setShow1v1] = useState<boolean>(true)
   const [show2v2, setShow2v2] = useState<boolean>(true)
-  
+
   return (
     <div className="0 flex h-screen flex-wrap">
-      <div className="bg-sidebar flex h-1/3 w-full flex-row items-center justify-center gap-12 xl:h-full xl:flex-1/3 xl:py-8 py-4 xl:flex-col">
+      <div className="bg-sidebar flex h-1/3 w-full flex-row items-center justify-center gap-12 py-4 xl:h-full xl:flex-1/3 xl:flex-col xl:py-8">
         <div>
           <MatchFilterBar
             filterBy="limit"

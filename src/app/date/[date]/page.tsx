@@ -2,7 +2,6 @@
 
 import Dashboard from "@/components/content/match/Dashboard"
 import MatchFilterBar from "@/components/content/match/MatchFilterBar"
-import RecentGoals from "@/components/content/match/RecentGoals"
 import { redirect } from "next/navigation"
 import { use, useState } from "react"
 
@@ -42,7 +41,7 @@ export default function DatePage({
             setShow1v1={setShow1v1}
             setShow2v2={setShow2v2}
           />
-        </div> 
+        </div>
       </div>
       <Dashboard
         filterDate={parsedDate}

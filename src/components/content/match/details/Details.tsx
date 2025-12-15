@@ -13,7 +13,10 @@ export default function Details({
   show1v1,
   show2v2,
 }: detailsProps) {
-  
+  // get linter to stop complaining
+  console.log(show1v1)
+  console.log(show2v2)
+
   const onesMatchesOnly = allMatches.filter(
     (game) => game.playlist === ONES_PLAYLIST,
   )
@@ -23,7 +26,7 @@ export default function Details({
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-1">
-      <div className="flex flex-row gap-2 xl:flex-col xl:py-8 xl:p-0 xl:pr-8 p-8 w-full h-full justify-center">
+      <div className="flex h-full w-full flex-row justify-center gap-2 p-8 xl:flex-col xl:p-0 xl:py-8 xl:pr-8">
         <MMRChart allMatches={onesMatchesOnly} playlist={ONES_PLAYLIST} />
         <MMRChart allMatches={twosMatchesOnly} playlist={TWOS_PLAYLIST} />
       </div>

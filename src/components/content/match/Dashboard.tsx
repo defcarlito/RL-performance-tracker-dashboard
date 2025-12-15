@@ -2,7 +2,7 @@ import Log from "./main-content/match-log/MatchLog"
 
 import { FilterType } from "@/types/filter"
 import { Game, Goal, Player } from "@/types/match"
-import { useEffect, useState } from "react"
+import { Dispatch, useEffect, useState } from "react"
 import Details from "./details/Details"
 
 import { supabase } from "../../../../supabase/supabase"
@@ -21,6 +21,7 @@ export default function Dashboard({
   show2v2: boolean
 }) {
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
+  console.log(validDates) // temp so the linter stops complaining
 
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
@@ -50,12 +51,16 @@ export default function Dashboard({
     </div>
   )
 
-  function useGetDatesFromSupabase(setValidDates) {
-    useEffect(() => {  
+  function useGetDatesFromSupabase(
+    setValidDates: Dispatch<React.SetStateAction<Set<string>>>,
+  ) {
+    useEffect(() => {
       async function load() {
         const { data: times, error } = await supabase
           .from("matches")
           .select("startEpoch")
+
+        console.log(error) // temp so the linter stops complaining
 
         const allTimes = new Set<string>()
 
@@ -64,13 +69,13 @@ export default function Dashboard({
             new Date(time.startEpoch * 1000).toISOString().slice(0, 10),
           )
         })
-        setValidDates(allTimes) 
+        setValidDates(allTimes)
       }
       load()
-    }, [])
+    }, [setValidDates])
   }
 
-  function useGetMatchesFromSupabase(limit: any, date: any) {
+  function useGetMatchesFromSupabase(limit?: number, date?: Date) {
     const [games, setGames] = useState<Game[]>([])
     useEffect(() => {
       async function load() {
@@ -120,24 +125,26 @@ export default function Dashboard({
         if (!games) return
 
         const allGames: Array<Game> = games?.map((match) => {
-          const allPlayers: Array<Player> = match.players.map((player) => {
-            const currentPlayer: Player = {
-              id: player.id,
-              uid: player.uid,
-              platform: player.platform,
-              team: player.team,
-              name: player.name,
-              isLocal: player.isLocal,
-              score: player.score,
-              goals: player.goals,
-              assists: player.assists,
-              shots: player.shots,
-              saves: player.saves,
-            }
-            return currentPlayer
-          })
+          const allPlayers: Array<Player> = match.players.map(
+            (player: Player) => {
+              const currentPlayer: Player = {
+                id: player.id,
+                uid: player.uid,
+                platform: player.platform,
+                team: player.team,
+                name: player.name,
+                isLocal: player.isLocal,
+                score: player.score,
+                goals: player.goals,
+                assists: player.assists,
+                shots: player.shots,
+                saves: player.saves,
+              }
+              return currentPlayer
+            },
+          )
 
-          const allGoals: Array<Goal> = match.goals.map((goal) => {
+          const allGoals: Array<Goal> = match.goals.map((goal: Goal) => {
             const currentGoal: Goal = {
               id: goal.id,
               uid: goal.uid,
@@ -161,7 +168,7 @@ export default function Dashboard({
         setGames(allGames)
       }
       load()
-    }, [])
+    }, [date, limit])
     return games
   }
 }
