@@ -5,13 +5,12 @@ This site displays the data collected by the my [StatExtract](https://github.com
 
 ~~Access a live of demo of the size [here]().~~
 
-I am unable to provide link to the live demo of the site at this moment. Instead, view the following gif of me using the app below:
+I am unable to provide link to the live demo of the site at this time. Instead, view the following gif of me breifly using the app below:
 
 ![Demo of site](/public/ex/demo.gif)
 
-*App demo.*
-
 The filter options are a bit limited right now, I plan to add more in the future. You may either filter by limit *or* by date. The log in the middle of the site shows all the matches as a result from the filter. Click show details to view match stats and some other information about that match. The graphs on the right showcase my MMR change over `n` days, where `n` is the number of matches resulted from the filter.
+
 ## Installation
 
 Clone the repo:
