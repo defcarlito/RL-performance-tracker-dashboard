@@ -19,6 +19,12 @@ Clone the repo:
 git clone https://github.com/defcarlito/RL-performance-tracker-dashboard
 ```
 
+Install dependencies:
+
+```
+npm install
+```
+
 Run the app:
 
 ```
