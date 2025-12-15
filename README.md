@@ -25,4 +25,4 @@ Run the app:
 npm run dev
 ```
 
-There are secret keys to access the database of my matches. So, the site will not work as intended if ran locally since the matches will not display as you will not have access to my database of matches.
+There are secret keys to access the database of my matches. So, the site will not work as intended if ran locally since the matches will not display because you will not have access to my database of matches.
