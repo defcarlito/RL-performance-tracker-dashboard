@@ -50,7 +50,7 @@ function useUpdateMatchCount(
 ) {
   useEffect(() => {
     setMatchCount(matches.length)
-  }, [matches])
+  }, [matches, setMatchCount])
 }
 
 type matchProps = {
@@ -79,14 +79,14 @@ export function Match({ matchData, filterBy }: matchProps) {
     })
     return [localScore, oppScore]
   }
-  
+
   const [localTeamScore, opponentTeamScore] = getTeamScores()
   const score: string = `${localTeamScore} - ${opponentTeamScore}`
 
   const hasLocalPlayerWon = (): boolean => {
     if (matchData.mmrAfter > matchData.mmrBefore) {
       return true
-    } else if (matchData.mmrAfter< matchData.mmrBefore) {
+    } else if (matchData.mmrAfter < matchData.mmrBefore) {
       return false
     }
     return localTeamScore > opponentTeamScore
@@ -121,7 +121,11 @@ export function Match({ matchData, filterBy }: matchProps) {
       </div>
       <div className="align-start text-muted-foreground relative flex flex-wrap justify-between text-sm">
         <div className="w-full">
-          <MatchDetails matchData={matchData} filterBy={filterBy} />
+          <MatchDetails
+            matchData={matchData}
+            filterBy={filterBy}
+            localTeam={localTeam}
+          />
         </div>
         <div className="absolute top-0 right-0">
           {matchData.playlist === ONES_PLAYLIST ? <OnesBadge /> : <TwosBadge />}

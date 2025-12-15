@@ -29,9 +29,14 @@ import { useState } from "react"
 type matchProps = {
   matchData: Game
   filterBy: FilterType
+  localTeam: number
 }
 
-export default function MatchDetails({ matchData, filterBy }: matchProps) {
+export default function MatchDetails({
+  matchData,
+  filterBy,
+  localTeam,
+}: matchProps) {
   const playerInfo: Player[] = matchData.players
 
   const sortedByLocalTeam = [...playerInfo].sort((a, b) => {
@@ -91,6 +96,37 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
     )
   }
 
+  const localTeammates: Array<Player> =
+    matchData?.players.filter((player) => player.team === localTeam) ?? []
+  const opponents: Array<Player> =
+    matchData?.players.filter((player) => player.team !== localTeam) ?? []
+
+  function getSaveEfficiency() {
+    const localTeamSaves = localTeammates.reduce(
+      (sum, player) => sum + player.saves,
+      0,
+    )
+    const opponentTeamShots = opponents.reduce(
+      (sum, player) => sum + player.shots,
+      0,
+    )
+    const saveEff = Math.round((localTeamSaves / opponentTeamShots) * 100)
+    return opponentTeamShots === 0 ? 0 : saveEff
+  }
+
+  function getShotConversion() {
+    const localTeamGoals = localTeammates.reduce(
+      (sum, player) => sum + player.goals,
+      0,
+    )
+    const localTeamShots = localTeammates.reduce(
+      (sum, player) => sum + player.shots,
+      0,
+    )
+    const conversionRate = Math.round((localTeamGoals / localTeamShots) * 100)
+    return localTeamShots === 0 ? 0 : conversionRate
+  }
+
   return (
     <>
       <Collapsible onOpenChange={setIsOpen}>
@@ -119,9 +155,14 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
                   {sortedByLocalTeam.map((player: Player, index: number) => (
                     <CustomRow player={player} key={index}>
                       <TableCell>
-                        {player.uid === LOCAL_PLAYER_ID
-                          ? <span className="flex gap-1 items-center"><Star className="size-4" fill="currentColor" />Me</span>
-                          : player.name}
+                        {player.uid === LOCAL_PLAYER_ID ? (
+                          <span className="flex items-center gap-1">
+                            <Star className="size-4" fill="currentColor" />
+                            Me
+                          </span>
+                        ) : (
+                          player.name
+                        )}
                       </TableCell>
                       <TableCell className="text-center">
                         {player.score}
@@ -157,6 +198,10 @@ export default function MatchDetails({ matchData, filterBy }: matchProps) {
                   : matchData.date.toLocaleDateString()}
               </div>
             </div>
+          </div>
+          <div className="mt-3">
+            <p>Save efficiency: {getSaveEfficiency()}%</p>
+            <p>Shot conversion rate: {getShotConversion()}%</p>
           </div>
         </CollapsibleContent>
       </Collapsible>

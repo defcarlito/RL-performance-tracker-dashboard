@@ -1,34 +1,17 @@
 "use client"
 
-import {
-  DropdownMenuCheckboxItemProps,
-  DropdownMenuRadioGroup,
-} from "@radix-ui/react-dropdown-menu"
 import { useState } from "react"
 
 import { useRouter } from "next/navigation"
 
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { OnesBadge, TwosBadge } from "@/components/ui/custom-badges"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { FilterType } from "@/types/filter"
-import { CalendarIcon, HashIcon } from "lucide-react"
 import * as React from "react"
 
 type FilterPlaylistProps = {
@@ -44,18 +27,6 @@ export function FilterPlaylist({
   show2v2,
   setShow2v2,
 }: FilterPlaylistProps) {
-  const selectedPlaylists = () => {
-    if (show1v1 && show2v2)
-      return (
-        <>
-          <OnesBadge /> <TwosBadge />
-        </>
-      )
-    else if (show1v1) return <OnesBadge />
-    else if (show2v2) return <TwosBadge />
-    else return "None selected"
-  }
-
   return (
     <>
       {show1v1 ? (

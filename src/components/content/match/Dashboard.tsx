@@ -24,10 +24,9 @@ export default function Dashboard({
 
   const [matchCount, setMatchCount] = useState(fetchLimit)
 
-  const games = useGetMatchesFromSupabase()
+  const games = useGetMatchesFromSupabase(fetchLimit, filterDate)
 
   useGetDatesFromSupabase(setValidDates)
-  useGetMatchesFromSupabase()
 
   return (
     <div className="flex h-2/3 w-full flex-col shadow-[-5px_0_15px_5px_rgba(0,0,0,0.2)] xl:h-full xl:flex-2/3 xl:flex-row">
@@ -52,7 +51,7 @@ export default function Dashboard({
   )
 
   function useGetDatesFromSupabase(setValidDates) {
-    useEffect(() => {
+    useEffect(() => {  
       async function load() {
         const { data: times, error } = await supabase
           .from("matches")
@@ -65,27 +64,57 @@ export default function Dashboard({
             new Date(time.startEpoch * 1000).toISOString().slice(0, 10),
           )
         })
-        setValidDates(allTimes)
+        setValidDates(allTimes) 
       }
       load()
     }, [])
   }
-  
-  // TODO: account for fetch limit and filter date
-  function useGetMatchesFromSupabase() {
-    const [games, setGames] = useState<Game[]>([])
 
+  function useGetMatchesFromSupabase(limit: any, date: any) {
+    const [games, setGames] = useState<Game[]>([])
     useEffect(() => {
       async function load() {
-        const { data: games, error } = await supabase.from("matches").select(`
-         *,
-        players (*),
-        goals (*)
-          `)
+        let games
+        if (date) {
+          // if picking date
+          const { start, end } = epochRangeForDate(date)
+          const { data, error } = await supabase
+            .from("matches")
+            .select(
+              `
+                *,
+                players (*),
+                goals (*)
+              `,
+            )
+            .gte("startEpoch", start)
+            .lte("startEpoch", end)
+            .order("startEpoch", { ascending: false })
 
-        if (error) {
-          console.log("Error: ", error)
-          return
+          if (error) {
+            console.log("Error: ", error)
+            return
+          }
+          games = data
+        } else if (limit) {
+          // if filtering my limit
+          const { data, error } = await supabase
+            .from("matches")
+            .select(
+              `
+                *,
+                players (*),
+                goals (*)
+              `,
+            )
+            .limit(limit)
+            .order("startEpoch", { ascending: false })
+
+          if (error) {
+            console.log("error: ", error)
+            return
+          }
+          games = data
         }
 
         if (!games) return
@@ -131,9 +160,15 @@ export default function Dashboard({
         })
         setGames(allGames)
       }
-      // return all games
       load()
     }, [])
     return games
   }
+}
+function epochRangeForDate(date: Date) {
+  const start = Math.floor(new Date(date.setHours(0, 0, 0, 0)).getTime() / 1000)
+  const end = Math.floor(
+    new Date(date.setHours(23, 59, 59, 999)).getTime() / 1000,
+  )
+  return { start, end }
 }

@@ -1,20 +1,10 @@
 "use client"
 
-import { db } from "@/firebase/config"
-import { FilterType } from "@/types/filter"
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore"
-
 import { Separator } from "@/components/ui/separator"
 import { Calendar, Car, Gamepad, Gamepad2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { FilterDate, FilterLimit, FilterPlaylist } from "./main-content/Filters"
+import { supabase } from "../../../../supabase/supabase"
 
 export default function MatchFilterBar({
   fetchLimit = 25,
@@ -35,7 +25,7 @@ export default function MatchFilterBar({
 }) {
   const [validDates, setValidDates] = useState<Set<string>>(new Set())
 
-  useQueryValidDates(setValidDates)
+  useGetDatesFromSupabase(setValidDates)
 
   return (
     <>
@@ -113,13 +103,22 @@ export default function MatchFilterBar({
   )
 }
 
-function useQueryValidDates(setValidDates: any): void {
+function useGetDatesFromSupabase(setValidDates) {
   useEffect(() => {
-    const fetchAvaliableDates = async () => {
-      const snapshot = await getDocs(collection(db, "match_dates"))
-      const fetchedDates = new Set<string>(snapshot.docs.map((doc) => doc.id))
-      setValidDates(fetchedDates)
+    async function load() {
+      const { data: times, error } = await supabase 
+        .from("matches")
+        .select("startEpoch")
+
+      const allTimes = new Set<string>()
+
+      times?.forEach((time) => {
+        allTimes.add(
+          new Date(time.startEpoch * 1000).toISOString().slice(0, 10),
+        )
+      })
+      setValidDates(allTimes)
     }
-    fetchAvaliableDates()
+    load()
   }, [])
 }
