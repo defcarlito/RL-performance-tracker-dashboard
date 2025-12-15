@@ -3,7 +3,7 @@
 This site displays the data collected by the my [StatExtract](https://github.com/defcarlito/StatExtract) plugin. I have a server that takes in the data from my plugin and uploads it to a database from which this site accesses. 
 ## Usage
 
-~~Access a live of demo of the size [here]().~~
+~~Access a live of demo of the site [here]().~~
 
 I am unable to provide link to the live demo of the site at this time. Instead, view the following gif of me breifly using the app below:
 
